@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffd000"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#f5b800" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+  <!-- Background rounded rect -->
+  <rect width="64" height="64" rx="14" fill="#0c0d0f"/>
+  <!-- Gold badge with skew -->
+  <g transform="skewX(-6) translate(3, 0)">
+    <rect x="7" y="14" width="50" height="36" rx="6" fill="url(#goldGrad)" filter="url(#shadow)"/>
+    <text x="32" y="39" fill="#0c0d0f" font-family="'Orbitron', 'Russo One', Impact, sans-serif" font-weight="900" font-size="20" text-anchor="middle" letter-spacing="0.5">MDL</text>
+  </g>
+</svg>

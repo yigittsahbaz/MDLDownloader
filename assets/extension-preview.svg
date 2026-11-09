@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 540" width="100%" height="100%">
+  <defs>
+    <style>
+      .bg { fill: #0d0e11; }
+      .panel { fill: #121316; stroke: #2c2f3a; stroke-width: 1.5; }
+      .card { fill: #1c1e24; stroke: #2c2f3a; stroke-width: 1; }
+      .text-white { fill: #f1f3f5; font-family: 'Segoe UI', Inter, sans-serif; }
+      .text-muted { fill: #9aa0ac; font-family: 'Segoe UI', Inter, sans-serif; }
+      .text-gold { fill: #f5b800; font-family: 'Segoe UI', Inter, sans-serif; }
+      .text-green { fill: #2ea043; font-family: 'Segoe UI', Inter, sans-serif; }
+      .font-mono { font-family: Consolas, monospace; }
+      .font-bold { font-weight: 700; }
+      .font-black { font-weight: 900; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="540" rx="14" class="bg"/>
+
+  <!-- LEFT: Chrome Extension Preview -->
+  <text x="50" y="38" class="text-gold font-black" font-size="14" letter-spacing="1.5">1. CHROME EXTENSION (v1.3 — IN-POPUP GAME FILTER &amp; ZIP PACKAGER)</text>
+  <rect x="50" y="52" width="460" height="455" rx="10" class="panel"/>
+
+  <!-- Ext Topbar -->
+  <rect x="51" y="53" width="458" height="48" rx="9" fill="#18191d"/>
+  <rect x="68" y="65" width="48" height="24" rx="4" fill="#f5b800"/>
+  <text x="75" y="82" fill="#111215" font-family="Segoe UI, sans-serif" font-weight="900" font-size="13">MDL</text>
+  <text x="124" y="82" class="text-white font-black" font-size="14" letter-spacing="1">DOWNLOADER</text>
+  <text x="455" y="81" class="text-muted" font-size="11">v1.3</text>
+
+  <!-- Ext Session Box -->
+  <rect x="68" y="114" width="424" height="54" rx="6" class="card"/>
+  <text x="82" y="133" class="text-muted font-bold" font-size="10">MEDAL ACCOUNT SESSION:</text>
+  <text x="82" y="153" class="text-green font-mono font-bold" font-size="12">✓ Logged in as @ProGamer (User ID: 8492014)</text>
+
+  <!-- Manual Search Box -->
+  <rect x="68" y="178" width="424" height="58" rx="6" class="card"/>
+  <text x="82" y="196" class="text-muted font-bold" font-size="10">SCAN ANY USERNAME OR PROFILE URL:</text>
+  <rect x="82" y="204" width="318" height="24" rx="4" fill="#121316" stroke="#2c2f3a"/>
+  <text x="92" y="220" class="text-white" font-size="11">https://medal.tv/u/ProGamer</text>
+  <rect x="408" y="204" width="70" height="24" rx="4" fill="#2c2f3a"/>
+  <text x="429" y="220" class="text-white font-bold" font-size="11">Scan</text>
+
+  <!-- Game Filter Checklist -->
+  <text x="68" y="258" class="text-white font-bold" font-size="12">@ProGamer — 142 Clips Across 4 Games</text>
+  <text x="385" y="258" class="text-gold font-bold" font-size="11">All | None</text>
+
+  <rect x="68" y="268" width="424" height="142" rx="6" fill="#141519" stroke="#2c2f3a"/>
+  
+  <!-- Game row 1 -->
+  <rect x="82" y="280" width="16" height="16" rx="3" fill="#f5b800"/>
+  <text x="86" y="293" fill="#111" font-weight="900" font-size="12">✓</text>
+  <text x="108" y="293" class="text-white font-bold" font-size="12">Counter-Strike 2</text>
+  <rect x="418" y="278" width="60" height="20" rx="10" fill="#121316" stroke="#2c2f3a"/>
+  <text x="427" y="292" class="text-gold font-bold" font-size="10">64 clips</text>
+
+  <!-- Game row 2 -->
+  <rect x="82" y="312" width="16" height="16" rx="3" fill="#f5b800"/>
+  <text x="86" y="325" fill="#111" font-weight="900" font-size="12">✓</text>
+  <text x="108" y="325" class="text-white font-bold" font-size="12">EA SPORTS FC 25 (FIFA)</text>
+  <rect x="418" y="310" width="60" height="20" rx="10" fill="#121316" stroke="#2c2f3a"/>
+  <text x="427" y="324" class="text-gold font-bold" font-size="10">28 clips</text>
+
+  <!-- Game row 3 -->
+  <rect x="82" y="344" width="16" height="16" rx="3" fill="#121316" stroke="#2c2f3a"/>
+  <text x="108" y="357" class="text-muted" font-size="12">Valorant</text>
+  <rect x="418" y="342" width="60" height="20" rx="10" fill="#121316" stroke="#2c2f3a"/>
+  <text x="427" y="356" class="text-muted font-bold" font-size="10">35 clips</text>
+
+  <!-- Game row 4 -->
+  <rect x="82" y="376" width="16" height="16" rx="3" fill="#121316" stroke="#2c2f3a"/>
+  <text x="108" y="389" class="text-muted" font-size="12">Grand Theft Auto V</text>
+  <rect x="418" y="374" width="60" height="20" rx="10" fill="#121316" stroke="#2c2f3a"/>
+  <text x="427" y="388" class="text-muted font-bold" font-size="10">15 clips</text>
+
+  <!-- Download Button -->
+  <rect x="68" y="424" width="424" height="42" rx="6" fill="#2ea043"/>
+  <text x="128" y="450" class="text-white font-black" font-size="13">⬇ Download Selected (92 Clips) as .ZIP</text>
+  <text x="108" y="486" class="text-muted" font-size="11">Single MyClips_ProGamer.zip — Zero multiple Save-As popups!</text>
+
+  <!-- RIGHT: Windows Desktop App (.EXE) Preview -->
+  <text x="550" y="38" class="text-gold font-black" font-size="14" letter-spacing="1.5">2. WINDOWS DESKTOP APP (STANDALONE 8-THREAD .EXE)</text>
+  <rect x="550" y="52" width="600" height="455" rx="10" class="panel"/>
+
+  <!-- Window Titlebar -->
+  <rect x="551" y="53" width="598" height="36" rx="9" fill="#18191d"/>
+  <text x="570" y="76" class="text-white font-bold" font-size="12">MDLDownloader — Bulk Medal.tv Video Downloader</text>
+  <circle cx="1125" cy="71" r="6" fill="#e5534b"/>
+  <circle cx="1105" cy="71" r="6" fill="#f5b800"/>
+
+  <!-- App Header -->
+  <rect x="574" y="106" width="52" height="26" rx="4" fill="#f5b800"/>
+  <text x="582" y="124" fill="#111" font-family="Segoe UI, sans-serif" font-weight="900" font-size="14">MDL</text>
+  <text x="634" y="124" class="text-white font-black" font-size="16" letter-spacing="1">DOWNLOADER</text>
+  <text x="772" y="123" class="text-muted" font-size="12">No Watermark • Original 1080p MP4 • Multi-Threaded ZIP</text>
+
+  <!-- Form Card -->
+  <rect x="574" y="145" width="552" height="195" rx="6" class="card"/>
+  
+  <text x="592" y="168" class="text-muted font-bold" font-size="10">MEDAL PROFILE URL OR USERNAME</text>
+  <rect x="592" y="175" width="516" height="30" rx="4" fill="#121316" stroke="#2c2f3a"/>
+  <text x="604" y="195" class="text-white" font-size="12">https://medal.tv/u/ProGamer</text>
+
+  <text x="592" y="224" class="text-muted font-bold" font-size="10">ZIP OUTPUT FOLDER (SAVES AS MyClips_&lt;username&gt;.zip)</text>
+  <rect x="592" y="231" width="424" height="30" rx="4" fill="#121316" stroke="#2c2f3a"/>
+  <text x="604" y="251" class="text-white font-mono" font-size="11">C:\Users\Player\Downloads</text>
+  <rect x="1024" y="231" width="84" height="30" rx="4" fill="#2c2f3a"/>
+  <text x="1044" y="251" class="text-white font-bold" font-size="11">Browse</text>
+
+  <!-- Checkboxes & Start -->
+  <rect x="592" y="276" width="15" height="15" rx="3" fill="#f5b800"/>
+  <text x="595" y="288" fill="#111" font-weight="900" font-size="11">✓</text>
+  <text x="615" y="288" class="text-white" font-size="12">Organize clips into Game Subfolders inside MyClips/</text>
+
+  <rect x="592" y="300" width="516" height="30" rx="5" fill="#2ea043"/>
+  <text x="745" y="320" class="text-white font-black" font-size="12">START BULK ZIP DOWNLOAD (8 THREADS)</text>
+
+  <!-- Progress & Console Log -->
+  <text x="574" y="362" class="text-gold font-bold" font-size="11">Packaging MyClips_ProGamer.zip (142/142)... Done!</text>
+  <rect x="574" y="370" width="552" height="10" rx="5" fill="#1c1e24"/>
+  <rect x="574" y="370" width="552" height="10" rx="5" fill="#f5b800"/>
+
+  <rect x="574" y="390" width="552" height="98" rx="6" fill="#0b0c0e" stroke="#2c2f3a"/>
+  <text x="588" y="410" class="text-muted font-mono" font-size="11">[1/4] Resolving profile 'ProGamer'... Found User ID: 8492014</text>
+  <text x="588" y="428" class="text-muted font-mono" font-size="11">[2/4] Total clips found: 142 across 4 games</text>
+  <text x="588" y="446" class="text-muted font-mono" font-size="11">[3/4] Downloaded 142/142 MP4s with 8 parallel workers</text>
+  <text x="588" y="464" class="text-green font-mono font-bold" font-size="11">[4/4] COMPLETE! Created: C:\Users\Player\Downloads\MyClips_ProGamer.zip</text>
+</svg>

@@ -1,0 +1,23 @@
+{
+  "name": "mdldownloader",
+  "version": "1.3.0",
+  "description": "Bulk Medal.tv Video Downloader Suite (Web App, Chrome Extension & Standalone Windows .EXE) — No Watermark, Original 1080p Quality, Game Folder Organization.",
+  "main": "web/server.js",
+  "scripts": {
+    "start": "node web/server.js",
+    "dev": "node web/server.js"
+  },
+  "keywords": [
+    "medal",
+    "medal-tv",
+    "video-downloader",
+    "bulk-downloader",
+    "gaming-clips",
+    "chrome-extension",
+    "jszip"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "MIT"
+}

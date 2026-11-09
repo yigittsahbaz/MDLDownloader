@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: mdldownloader
+    env: node
+    plan: free
+    buildCommand: echo "Zero external npm dependencies required"
+    startCommand: node web/server.js
+    envVars:
+      - key: PORT
+        value: 3000

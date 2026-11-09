@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MDLDownloader Extension</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            width: 395px;
+            padding: 14px;
+            background: #121316;
+            color: #e4e6eb;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-size: 12px;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #22252a;
+        }
+        .brand {
+            font-weight: 900;
+            font-size: 15px;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .mdl-badge {
+            background: #f5b800;
+            color: #0c0d0f;
+            padding: 1px 6px;
+            border-radius: 3px;
+            font-weight: 900;
+        }
+        .ver {
+            font-size: 10px;
+            color: #9ca3af;
+            background: #181a20;
+            padding: 2px 7px;
+            border-radius: 3px;
+            border: 1px solid #262930;
+        }
+
+        /* Manual Profile / URL Search Bar inside Extension */
+        .search-card {
+            background: #181a20;
+            border: 1px solid #262930;
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .search-label {
+            font-size: 11px;
+            color: #9ca3af;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .search-row {
+            display: flex;
+            gap: 6px;
+        }
+        .search-input {
+            flex: 1;
+            height: 32px;
+            padding: 0 9px;
+            background: #121316;
+            border: 1px solid #32363f;
+            border-radius: 3px;
+            color: #ffffff;
+            font-size: 12px;
+            outline: none;
+        }
+        .search-input:focus {
+            border-color: #f5b800;
+        }
+        .search-btn {
+            background: #f5b800;
+            color: #0c0d0f;
+            border: none;
+            border-radius: 3px;
+            padding: 0 12px;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .search-btn:hover {
+            background: #ffca28;
+        }
+
+        /* Session / Login Banner */
+        .card {
+            background: #181a20;
+            border: 1px solid #262930;
+            border-radius: 4px;
+            padding: 9px 11px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        .card-left {
+            min-width: 0;
+        }
+        .label {
+            font-size: 10px;
+            color: #9ca3af;
+            margin-bottom: 2px;
+        }
+        .val {
+            font-weight: 600;
+            color: #ffffff;
+            font-size: 11px;
+            word-break: break-word;
+        }
+        .login-btn {
+            background: #252830;
+            color: #f5b800;
+            border: 1px solid rgba(245, 184, 0, 0.35);
+            padding: 5px 9px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .login-btn:hover {
+            background: #32363f;
+        }
+
+        .games-section {
+            display: none;
+            background: #181a20;
+            border: 1px solid #262930;
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .games-section.visible {
+            display: block;
+        }
+        .games-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 6px;
+            margin-bottom: 6px;
+            border-bottom: 1px solid #262930;
+            font-weight: 600;
+            color: #f5b800;
+        }
+        .games-list {
+            max-height: 175px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            padding-right: 4px;
+        }
+        .game-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #121316;
+            padding: 5px 8px;
+            border-radius: 3px;
+            border: 1px solid #22252a;
+            cursor: pointer;
+            user-select: none;
+        }
+        .game-row:hover {
+            border-color: #383c47;
+        }
+        .game-left {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            overflow: hidden;
+        }
+        .game-name {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 230px;
+            color: #e4e6eb;
+        }
+        .game-count {
+            font-family: Consolas, monospace;
+            font-size: 11px;
+            color: #f5b800;
+            background: rgba(245, 184, 0, 0.12);
+            padding: 1px 6px;
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+        .opt-row {
+            margin-top: 8px;
+            padding-top: 7px;
+            border-top: 1px solid #262930;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #d1d5db;
+            font-size: 11px;
+        }
+        .btn {
+            width: 100%;
+            padding: 10px 12px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            margin-bottom: 8px;
+            transition: background 0.15s;
+        }
+        .btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+        .btn-gold {
+            background: #f5b800;
+            color: #0c0d0f;
+        }
+        .btn-gold:hover:not(:disabled) {
+            background: #ffca28;
+        }
+        .btn-cancel {
+            display: none;
+            background: #252830;
+            color: #ef4444;
+            border: 1px solid #383c47;
+        }
+        .progress-wrap {
+            display: none;
+            background: #181a20;
+            border: 1px solid #262930;
+            border-radius: 4px;
+            padding: 8px 10px;
+            margin-bottom: 8px;
+        }
+        .progress-wrap.visible {
+            display: block;
+        }
+        .progress-top {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            margin-bottom: 5px;
+            color: #d1d5db;
+        }
+        .progress-track {
+            width: 100%;
+            height: 7px;
+            background: #0c0d0f;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: #f5b800;
+            transition: width 0.15s;
+        }
+        .status-box {
+            font-size: 11px;
+            color: #9ca3af;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="brand"><span class="mdl-badge">MDL</span>DOWNLOADER</div>
+        <span class="ver">v1.3</span>
+    </div>
+
+    <!-- Option 1: Account Status / Login Prompt -->
+    <div class="card">
+        <div class="card-left">
+            <div class="label">Medal.tv Session Status:</div>
+            <div id="sessionStatus" class="val">Checking login status...</div>
+        </div>
+        <button id="actionSessionBtn" type="button" class="login-btn">Log In on Medal.tv</button>
+    </div>
+
+    <!-- Option 2: Manual Username or Profile URL Input -->
+    <div class="search-card">
+        <div class="search-label">
+            <span>Scan Any Username or Profile URL:</span>
+            <a href="javascript:void(0)" id="loadMyAccountLink" style="display:none; color:#f5b800; font-weight:600; text-decoration:none;">Load My Account</a>
+        </div>
+        <form id="manualSearchForm" class="search-row">
+            <input
+                id="manualProfileInput"
+                type="text"
+                class="search-input"
+                placeholder="https://medal.tv/u/username or username"
+                required
+            />
+            <button id="manualScanBtn" type="submit" class="search-btn">Scan</button>
+        </form>
+    </div>
+
+    <!-- Game Category Checkboxes Section -->
+    <div id="gamesSection" class="games-section">
+        <div class="games-header">
+            <label style="cursor:pointer; display:flex; align-items:center; gap:6px;">
+                <input type="checkbox" id="toggleAllGames" checked />
+                <span id="targetUserLabel">Select Games</span>
+            </label>
+            <span id="selectedClipsSummary" style="color:#e4e6eb; font-size:11px;">0 videos selected</span>
+        </div>
+        <div id="gamesList" class="games-list"></div>
+        <label class="opt-row" style="cursor:pointer;">
+            <input type="checkbox" id="subfoldersCheck" checked />
+            <span>Organize into Game Subfolders inside MyClips.zip</span>
+        </label>
+    </div>
+
+    <!-- Progress Bar -->
+    <div id="progressWrap" class="progress-wrap">
+        <div class="progress-top">
+            <span id="progressLabel">Downloading...</span>
+            <span id="progressCount">0 / 0</span>
+        </div>
+        <div class="progress-track">
+            <div id="progressFill" class="progress-fill"></div>
+        </div>
+    </div>
+
+    <!-- Direct In-Extension ZIP Download Button -->
+    <button id="downloadZipBtn" class="btn btn-gold" disabled>
+        Download Selected as MyClips.zip
+    </button>
+
+    <button id="cancelBtn" class="btn btn-cancel">
+        Cancel Download
+    </button>
+
+    <div id="progressStatus" class="status-box">
+        Log in to your Medal.tv account to access all your private &amp; protected videos, or type any username above to scan public clips.
+    </div>
+
+    <script src="jszip.min.js"></script>
+    <script src="popup.js"></script>
+</body>
+</html>

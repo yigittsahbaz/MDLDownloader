@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MDLDownloader — Bulk Medal.tv Video &amp; Clip Downloader | No Watermark 1080p</title>
+    <meta name="description" content="Free online Medal.tv video downloader. Download Medal clips, highlights, and entire user profiles in bulk without watermark. Direct 1080p MP4 and single MyClips.zip archive.">
+    <meta name="keywords" content="medal tv downloader, medal video downloader, download medal clips, bulk medal downloader, download all medal clips, medal without watermark, medal clip to mp4, medal tv backup, save medal clips">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://mdldownloader.onrender.com/">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="alternate icon" href="/favicon.svg">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://mdldownloader.onrender.com/">
+    <meta property="og:title" content="MDLDownloader — Bulk Medal.tv Video &amp; Clip Downloader">
+    <meta property="og:description" content="Download Medal.tv clips and full user profiles in bulk without watermark. Fast, high quality 1080p MP4 &amp; MyClips.zip archive.">
+    <meta property="og:image" content="https://mdldownloader.onrender.com/assets/web-preview.svg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://mdldownloader.onrender.com/">
+    <meta property="twitter:title" content="MDLDownloader — Bulk Medal.tv Video &amp; Clip Downloader">
+    <meta property="twitter:description" content="Bulk download Medal clips without watermarks in 1080p MP4. Free Chrome Extension &amp; Windows Desktop App included.">
+    <meta property="twitter:image" content="https://mdldownloader.onrender.com/assets/web-preview.svg">
+
+    <!-- Structured Data for Google (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "MDLDownloader",
+      "url": "https://mdldownloader.onrender.com/",
+      "description": "Free web tool, Chrome Extension, and Windows desktop application to download Medal.tv gaming clips and full profiles in bulk without watermark.",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Russo+One&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: #121316;
+            color: #e4e6eb;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        a { color: #f5b800; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        /* Top Navbar (Clean like TikWM) */
+        .navbar {
+            background-color: #0c0d0f;
+            border-bottom: 1px solid #22252a;
+            height: 62px;
+            display: flex;
+            align-items: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        /* Stylized Arcade/Gaming Logo like TikWM */
+        .logo {
+            font-family: 'Orbitron', 'Russo One', sans-serif;
+            font-size: 24px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #ffffff;
+            text-decoration: none !important;
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            text-shadow: 0 2px 10px rgba(245, 184, 0, 0.25);
+        }
+        .logo .mdl-box {
+            background: linear-gradient(135deg, #ffd000 0%, #f59e0b 100%);
+            color: #0c0d0f;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-right: 4px;
+            box-shadow: 0 0 12px rgba(245, 184, 0, 0.4);
+            transform: skewX(-8deg);
+            display: inline-block;
+        }
+        .logo .dl-text {
+            background: linear-gradient(90deg, #ffffff 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 0.5px;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+        }
+        .nav-links a {
+            color: #b0b3b8;
+            padding: 7px 14px;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+        .nav-links a:hover {
+            color: #ffffff;
+            background: #1c1e24;
+        }
+        .nav-links a.active {
+            background: #f5b800;
+            color: #0c0d0f;
+            font-weight: 600;
+        }
+        .bmc-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: #ffdd00 !important;
+            color: #0c0d0f !important;
+            font-weight: 700 !important;
+            padding: 6px 13px !important;
+            border-radius: 4px;
+            font-size: 13px;
+            box-shadow: 0 2px 6px rgba(255, 221, 0, 0.25);
+            transition: transform 0.15s ease, background 0.15s ease;
+        }
+        .bmc-btn:hover {
+            background: #ffea55 !important;
+            transform: translateY(-1px);
+            text-decoration: none !important;
+        }
+        .bmc-box {
+            background: #181a20;
+            border: 1px solid #2f3440;
+            border-radius: 6px;
+            padding: 16px;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        .bmc-box h4 {
+            font-size: 14px;
+            color: #ffffff;
+            margin-bottom: 6px;
+        }
+        .bmc-box p {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-bottom: 12px;
+        }
+
+        /* Hero Banner (TikWM Style: Solid dark banner, centered title, single joined input bar) */
+        .hero-banner {
+            background-color: #181a20;
+            border-bottom: 1px solid #262930;
+            padding: 56px 0 52px;
+            text-align: center;
+        }
+        .hero-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+        .hero-title span {
+            color: #f5b800;
+        }
+        .hero-sub {
+            font-size: 15px;
+            color: #9ca3af;
+            margin-bottom: 28px;
+        }
+
+        /* Joined Input Bar: [Mode Select] [URL/Username Input] [Download Button] */
+        .search-bar-wrap {
+            max-width: 780px;
+            margin: 0 auto;
+        }
+        .input-group {
+            display: flex;
+            width: 100%;
+            height: 46px;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid #32363f;
+            background: #ffffff;
+        }
+        .mode-label {
+            background: #252830;
+            color: #e4e6eb;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 0 16px;
+            display: flex;
+            align-items: center;
+            border-right: 1px solid #32363f;
+            white-space: nowrap;
+            user-select: none;
+        }
+        .search-input {
+            flex: 1;
+            border: none;
+            padding: 0 14px;
+            font-size: 14px;
+            color: #111827;
+            background: #ffffff;
+            outline: none;
+        }
+        .search-input::placeholder {
+            color: #6b7280;
+        }
+        .search-btn {
+            background: #f5b800;
+            color: #0c0d0f;
+            border: none;
+            padding: 0 26px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.15s;
+        }
+        .search-btn:hover {
+            background: #ffca28;
+        }
+        .search-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        /* Optional Session Key Toggle under Search Bar */
+        .auth-toggle-wrap {
+            margin-top: 12px;
+            text-align: left;
+        }
+        .auth-toggle-btn {
+            background: none;
+            border: none;
+            color: #9ca3af;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .auth-toggle-btn:hover {
+            color: #f5b800;
+        }
+        .auth-box {
+            display: none;
+            margin-top: 10px;
+            background: #121316;
+            border: 1px solid #2b2f38;
+            border-radius: 4px;
+            padding: 12px 14px;
+            font-size: 12px;
+            color: #9ca3af;
+        }
+        .auth-box.open {
+            display: block;
+        }
+        .auth-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .auth-input {
+            flex: 1;
+            height: 34px;
+            padding: 0 10px;
+            background: #181a20;
+            border: 1px solid #32363f;
+            color: #ffffff;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        .small-btn {
+            background: #252830;
+            color: #e4e6eb;
+            border: 1px solid #32363f;
+            padding: 0 12px;
+            border-radius: 3px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .small-btn:hover {
+            background: #32363f;
+        }
+        .code-line {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-top: 6px;
+        }
+        .code-box {
+            flex: 1;
+            background: #0c0d0f;
+            border: 1px solid #262930;
+            padding: 6px 8px;
+            font-family: Consolas, monospace;
+            font-size: 11px;
+            color: #f5b800;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        /* Main Layout with Passive Side Ad Rail */
+        .main-wrap {
+            flex: 1;
+            padding: 30px 0 50px;
+        }
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 28px;
+            align-items: start;
+        }
+        @media (max-width: 960px) {
+            .layout-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 640px) {
+            .hero-banner {
+                padding: 36px 0 32px;
+            }
+            .hero-title {
+                font-size: 22px;
+                line-height: 1.3;
+            }
+            .hero-sub {
+                font-size: 13px;
+                margin-bottom: 20px;
+            }
+            .mode-label {
+                display: none; /* Hide label on mobile to give input maximum width */
+            }
+            .search-input {
+                font-size: 13px;
+                padding: 0 10px;
+            }
+            .search-btn {
+                padding: 0 16px;
+                font-size: 13px;
+            }
+            .nav-inner {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            .navbar {
+                height: auto;
+                padding: 10px 0;
+            }
+            .nav-links {
+                gap: 2px;
+                font-size: 12px;
+                flex-wrap: wrap;
+            }
+            .nav-links a {
+                padding: 4px 8px;
+            }
+            .bmc-btn {
+                padding: 4px 8px !important;
+                font-size: 12px;
+            }
+            .toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .toolbar-left, .toolbar-right {
+                width: 100%;
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .ctrl-select, .ctrl-input, .btn-action {
+                width: 100%;
+            }
+            .clips-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Notice Section (TikWM style) */
+        .notice-section {
+            margin-bottom: 24px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid #22252a;
+        }
+        .notice-heading {
+            font-size: 16px;
+            font-weight: 600;
+            color: #f5b800;
+            margin-bottom: 8px;
+        }
+        .notice-item {
+            font-size: 13px;
+            color: #9ca3af;
+            margin-bottom: 4px;
+        }
+        .notice-item strong {
+            color: #d1d5db;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            display: none;
+            background: #181a20;
+            border: 1px solid #2b2f38;
+            border-radius: 4px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .status-bar.visible {
+            display: flex;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: none;
+        }
+        .status-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+        .status-sub {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+        .warn-pill {
+            display: none;
+            font-size: 12px;
+            color: #f5b800;
+            background: rgba(245, 184, 0, 0.1);
+            border: 1px solid rgba(245, 184, 0, 0.3);
+            padding: 6px 10px;
+            border-radius: 3px;
+        }
+
+        /* Results Toolbar & Grid */
+        .results-panel {
+            display: none;
+            margin-bottom: 32px;
+        }
+        .results-panel.visible {
+            display: block;
+        }
+        .toolbar {
+            background: #181a20;
+            border: 1px solid #2b2f38;
+            border-radius: 4px;
+            padding: 12px 14px;
+            margin-bottom: 16px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .toolbar-left, .toolbar-right {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+        }
+        .ctrl-select, .ctrl-input {
+            height: 34px;
+            padding: 0 10px;
+            background: #121316;
+            border: 1px solid #32363f;
+            color: #e4e6eb;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        .btn-action {
+            height: 34px;
+            padding: 0 14px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-gold {
+            background: #f5b800;
+            color: #0c0d0f;
+        }
+        .btn-gold:hover { background: #ffca28; }
+        .btn-dark {
+            background: #252830;
+            color: #e4e6eb;
+            border: 1px solid #383c47;
+        }
+        .btn-dark:hover { background: #32363f; }
+
+        /* Progress Bar */
+        .progress-wrap {
+            display: none;
+            background: #181a20;
+            border: 1px solid #2b2f38;
+            border-radius: 4px;
+            padding: 12px 14px;
+            margin-bottom: 16px;
+        }
+        .progress-wrap.visible {
+            display: block;
+        }
+        .progress-top {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            margin-bottom: 6px;
+        }
+        .progress-track {
+            width: 100%;
+            height: 8px;
+            background: #0c0d0f;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: #f5b800;
+            transition: width 0.15s;
+        }
+
+        /* Video Cards Grid (Clean, flat, like TikWM) */
+        .clips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            gap: 14px;
+        }
+        .clip-card {
+            background: #181a20;
+            border: 1px solid #262930;
+            border-radius: 4px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: border-color 0.15s, transform 0.15s;
+        }
+        .clip-card:hover {
+            border-color: #3f4452;
+            transform: translateY(-2px);
+        }
+        .clip-card.selected {
+            border-color: #f5b800 !important;
+            box-shadow: 0 0 10px rgba(245, 184, 0, 0.15);
+        }
+        .thumb-wrap {
+            position: relative;
+            aspect-ratio: 16 / 9;
+            background: #0c0d0f;
+            overflow: hidden;
+        }
+        .thumb-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .thumb-top-left {
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(0, 0, 0, 0.75);
+            padding: 2px 6px;
+            border-radius: 2px;
+            font-size: 11px;
+        }
+        .thumb-duration {
+            position: absolute;
+            bottom: 6px;
+            right: 6px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            font-size: 11px;
+            padding: 1px 5px;
+            border-radius: 2px;
+            font-family: Consolas, monospace;
+        }
+        .clip-body {
+            padding: 9px 10px;
+        }
+        .clip-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #e4e6eb;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 3px;
+        }
+        .clip-meta {
+            font-size: 11px;
+            color: #8a8f98;
+            display: flex;
+            justify-content: space-between;
+        }
+        .clip-footer {
+            padding: 7px 10px;
+            border-top: 1px solid #22252a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+        }
+        .dl-link {
+            color: #f5b800;
+            font-weight: 600;
+        }
+
+        /* Companion Downloads Section (Desktop EXE & Chrome Extension) */
+        .downloads-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 26px;
+            padding-top: 22px;
+            border-top: 1px solid #22252a;
+        }
+        @media (max-width: 720px) {
+            .downloads-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .dl-box {
+            background: #181a20;
+            border: 1px solid #2b2f38;
+            border-radius: 4px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .dl-box-tag {
+            font-size: 11px;
+            font-weight: 700;
+            color: #f5b800;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        .dl-box h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 6px;
+        }
+        .dl-box p {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-bottom: 14px;
+            line-height: 1.5;
+        }
+        .dl-box-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding-top: 12px;
+            border-top: 1px solid #22252a;
+        }
+        .dl-btn-main {
+            display: inline-block;
+            background: #f5b800;
+            color: #0c0d0f !important;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 8px 14px;
+            border-radius: 3px;
+            text-decoration: none !important;
+        }
+        .dl-btn-main:hover {
+            background: #ffca28;
+        }
+
+        /* Simple Text Instructions & Privacy Policy (TikWM bottom style) */
+        .info-block {
+            margin-top: 28px;
+            padding-top: 22px;
+            border-top: 1px solid #22252a;
+        }
+        .info-block h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+        .info-block h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #e4e6eb;
+            margin-top: 14px;
+            margin-bottom: 4px;
+        }
+        .info-block p {
+            font-size: 13px;
+            color: #9ca3af;
+            margin-bottom: 10px;
+        }
+        .info-block ol, .info-block ul {
+            padding-left: 20px;
+            font-size: 13px;
+            color: #9ca3af;
+            margin-bottom: 18px;
+        }
+        .info-block li {
+            margin-bottom: 6px;
+        }
+
+        /* Passive Sidebar Ad Container (Never blocks content) */
+        .side-rail {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+        .ad-box {
+            background: #181a20;
+            border: 1px solid #262930;
+            border-radius: 4px;
+            padding: 10px;
+            text-align: center;
+        }
+        .ad-label {
+            font-size: 10px;
+            color: #6b7280;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            text-align: left;
+        }
+        .ad-placeholder {
+            width: 100%;
+            height: 250px;
+            background: #121316;
+            border: 1px dashed #2b2f38;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6b7280;
+            font-size: 12px;
+            padding: 16px;
+        }
+
+        /* Footer */
+        .footer {
+            background: #0c0d0f;
+            border-top: 1px solid #22252a;
+            padding: 20px 0;
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: auto;
+        }
+        .footer-inner {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navigation Bar -->
+    <header class="navbar">
+        <div class="container nav-inner">
+            <a href="/" class="logo">
+                <span class="mdl-box">MDL</span><span class="dl-text">DOWNLOADER</span>
+            </a>
+            <nav class="nav-links">
+                <a href="/" class="active">Home</a>
+                <a href="#apps-and-extension">Desktop App &amp; Extension</a>
+                <a href="#how-to-use">How To Use</a>
+                <a href="#privacy-policy">Privacy Policy</a>
+                <a href="https://buymeacoffee.com/bblaine" target="_blank" rel="noopener" class="bmc-btn" title="Support MDLDownloader on Buy Me a Coffee">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M20.216 6.415l-.132-.666c-.119-.597-.388-1.156-.78-1.619-.391-.462-.892-.81-1.455-1.01-1.09-.39-4.24-.39-4.24-.39s-3.15 0-4.24.39c-.563.2-1.064.548-1.455 1.01-.392.463-.661 1.022-.78 1.619l-.132.666H4.25A2.25 2.25 0 002 8.665v2.835a6.75 6.75 0 006 6.697V20H5.75a.75.75 0 000 1.5h12.5a.75.75 0 000-1.5H16v-1.803a6.75 6.75 0 006-6.697V8.665a2.25 2.25 0 00-2.25-2.25h-2.75zm.75 5.085A5.257 5.257 0 0116.5 16.5v-7h4.466v2z"/></svg>
+                    <span>Buy Me a Coffee</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Search Banner (TikWM Layout) -->
+    <section class="hero-banner">
+        <div class="container">
+            <h1 class="hero-title"><span>Medal.tv</span> Video & Profile Downloader</h1>
+            <p class="hero-sub">No Watermark. Bulk Profile Backup (MyClips.zip). High Quality.</p>
+
+            <div class="search-bar-wrap">
+                <form id="searchForm">
+                    <div class="input-group">
+                        <div class="mode-label">Profile / User</div>
+                        <input
+                            id="profileInput"
+                            type="text"
+                            class="search-input"
+                            required
+                            placeholder="https://medal.tv/u/username or username"
+                        />
+                        <button id="scanBtn" type="submit" class="search-btn">Download</button>
+                    </div>
+
+                    <div class="auth-toggle-wrap">
+                        <button type="button" id="toggleAuthBtn" class="auth-toggle-btn">
+                            <span id="authArrow">▸</span> Unlock Private or Guest-Protected Clips (How to Get Session Key)
+                        </button>
+                        <div id="authPanel" class="auth-box">
+                            <div class="auth-row">
+                                <input
+                                    id="authKeyInput"
+                                    type="password"
+                                    class="auth-input"
+                                    placeholder="Paste your Medal session key here (e.g. mdl_...)"
+                                />
+                                <button type="button" id="showKeyBtn" class="small-btn">Show</button>
+                            </div>
+                            <div style="line-height: 1.65; color: #d1d5db; margin-top: 6px;">
+                                <strong style="color: #f5b800;">Step-by-Step Guide to Get Your Session Key (Takes 15 Seconds):</strong>
+                                <ol style="padding-left: 18px; margin-top: 4px; color: #9ca3af;">
+                                    <li>Go to <a href="https://medal.tv" target="_blank" rel="noopener">medal.tv</a> in your browser and <strong>log in to your account</strong> (you must be logged in for the key to exist).</li>
+                                    <li>Press <strong>F12</strong> on your keyboard (or right-click anywhere &rarr; <strong>Inspect</strong>) and click the <strong>Console</strong> tab at the top.</li>
+                                    <li><strong>Important (First-Time Browser Warning):</strong> When you try to paste in the Console, Chrome/Brave/Edge may block it and show a warning. Simply type <code>allow pasting</code> on your keyboard and press <strong>Enter</strong> to unlock pasting.</li>
+                                    <li>Copy the command below, paste it into the Console, and press <strong>Enter</strong>:</li>
+                                </ol>
+                            </div>
+                            <div class="code-line">
+                                <div id="consoleSnippet" class="code-box">JSON.parse(atob(decodeURIComponent(document.cookie.split('; ').find(r => r.startsWith('medal-auth=')).split('=')[1]))).key</div>
+                                <button type="button" id="copySnippetBtn" class="small-btn">Copy</button>
+                            </div>
+                            <div style="margin-top: 6px; color: #9ca3af;">
+                                5. Copy the resulting <code>mdl_...</code> text (without quotes), paste it into the box above, and click <strong>Download</strong>!
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Body + Right Sidebar Ad Slot -->
+    <div class="main-wrap">
+        <div class="container layout-grid">
+
+            <!-- Left/Main Content Area -->
+            <main>
+                <!-- Important Notice (TikWM style) -->
+                <div class="notice-section">
+                    <div class="notice-heading">Important Notice</div>
+                    <div class="notice-item">• <strong>Bulk ZIP Download:</strong> Select all clips from any profile and click <strong>Download MyClips.zip</strong> to get a single archive in your Downloads folder.</div>
+                    <div class="notice-item">• <strong>Direct Folder Save:</strong> For large libraries (100+ clips), use <strong>Save to Local Folder</strong> to write MP4 files directly to your disk without waiting for ZIP compression.</div>
+                </div>
+
+                <!-- Scan Status Box -->
+                <div id="statusBox" class="status-bar">
+                    <div class="user-info">
+                        <img id="profileAvatar" class="user-avatar" src="" alt="" />
+                        <div>
+                            <div id="statusTitle" class="status-title">Scanning...</div>
+                            <div id="statusSub" class="status-sub">Please wait...</div>
+                        </div>
+                    </div>
+                    <div id="ProtectedWarning" class="warn-pill"></div>
+                </div>
+
+                <!-- Clips Toolbar & Grid (Appears when profile scanned) -->
+                <div id="controlsSection" class="results-panel">
+                    <div class="toolbar">
+                        <div class="toolbar-left">
+                            <label style="font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                                <input type="checkbox" id="selectAllCheckbox" checked />
+                                <span>Select All (<span id="selectedCount">0</span>)</span>
+                            </label>
+                            <label style="font-size: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; color: #cbd5e1; user-select: none; background: #121316; padding: 6px 10px; border-radius: 3px; border: 1px solid #32363f;">
+                                <input type="checkbox" id="groupByGameCheckbox" checked />
+                                <span>Organize into Game Subfolders</span>
+                            </label>
+                            <select id="gameFilter" class="ctrl-select">
+                                <option value="ALL">All Games</option>
+                            </select>
+                            <input id="titleSearch" type="text" class="ctrl-input" placeholder="Search clip title..." />
+                        </div>
+                        <div class="toolbar-right">
+                            <button id="downloadZipBtn" type="button" class="btn-action btn-gold">Download MyClips.zip</button>
+                            <button id="downloadFolderBtn" type="button" class="btn-action btn-dark">Save to Local Folder</button>
+                            <button id="exportLinksBtn" type="button" class="btn-action btn-dark">Export Links (.txt)</button>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div id="downloadProgressPanel" class="progress-wrap">
+                        <div class="progress-top">
+                            <span id="progressText">Preparing download...</span>
+                            <span>
+                                <span id="progressStats">0 / 0</span>
+                                <a href="javascript:void(0)" id="cancelDownloadBtn" style="margin-left: 10px; color: #ef4444;">Cancel</a>
+                            </span>
+                        </div>
+                        <div class="progress-track">
+                            <div id="progressBar" class="progress-fill"></div>
+                        </div>
+                    </div>
+
+                    <!-- Clips Grid -->
+                    <div id="clipsGrid" class="clips-grid"></div>
+                </div>
+
+                <!-- Companion Downloads: Desktop App (.exe) & Chrome Extension (.zip) -->
+                <div id="apps-and-extension" class="downloads-grid">
+                    <div class="dl-box">
+                        <div>
+                            <div class="dl-box-tag">Windows Desktop App (.EXE)</div>
+                            <h3>MDLDownloader for Windows</h3>
+                            <p>
+                                Standalone 8-thread parallel downloader for massive clip libraries (300+ videos). Downloads and packages all your clips directly into a single <code>MyClips_username.zip</code> in your Downloads folder without browser memory limits.
+                            </p>
+                        </div>
+                        <div class="dl-box-footer">
+                            <span style="font-size: 11px; color: #8a8f98;">v1.3 • Portable EXE (12 MB)</span>
+                            <a href="/downloads/MDLDownloader.exe" download="MDLDownloader.exe" class="dl-btn-main">Download .EXE</a>
+                        </div>
+                    </div>
+
+                    <div class="dl-box">
+                        <div>
+                            <div class="dl-box-tag">Browser Extension (Chrome / Brave / Edge)</div>
+                            <h3>MDLDownloader Browser Extension</h3>
+                            <p>
+                                Automatically detects your logged-in Medal.tv session (no Session Key copy-pasting needed) or lets you search any username. Pick specific games (e.g. FIFA + CS2) and download a single <code>MyClips.zip</code> straight from your toolbar.
+                            </p>
+                        </div>
+                        <div class="dl-box-footer">
+                            <span style="font-size: 11px; color: #8a8f98;">v1.3 • Manifest V3 (.ZIP)</span>
+                            <a href="/downloads/MDLDownloader-Chrome-Extension.zip" download="MDLDownloader-Chrome-Extension.zip" class="dl-btn-main">Download Extension</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- How to Use Text Section -->
+                <div id="how-to-use" class="info-block">
+                    <h2>Download Medal.tv Clips Without Watermark for FREE</h2>
+                    <ol>
+                        <li>Enter your Medal.tv username or profile link (e.g. <code>https://medal.tv/u/username</code>) in the input box above.</li>
+                        <li>Click the <strong>Download</strong> button to load all public clips from the profile.</li>
+                        <li>Filter by game category or select specific clips you want to keep.</li>
+                        <li>Click <strong>Download MyClips.zip</strong> to save a single ZIP file to your devices, or click <strong>Download MP4</strong> on individual clips.</li>
+                    </ol>
+                </div>
+
+                <!-- Privacy Policy Section (Requested Exact Structure) -->
+                <div id="privacy-policy" class="info-block">
+                    <h2>Privacy Policy</h2>
+
+                    <h3>Personal information</h3>
+                    <p>This website does not collect or transmit any user's personally identifiable information. No personal information is used, stored, secured or disclosed by services this website works with.</p>
+
+                    <h3>Technical information</h3>
+                    <p>No technical information is sent or stored for now (such as IP addresses included in the HTTP calls the website makes). But we reserve the right to collect such informations in later versions to provide better service to you. We'll update this privacy policy then.</p>
+
+                    <h3>Third parties</h3>
+                    <p>If the website makes use of third party services, their usage of information is excluded from this privacy policy. You will be clearly made aware of the third parties involved in the website and we will ensure the very minimal set of data is set to those third parties.</p>
+
+                    <h3>Report violations or get more information</h3>
+                    <p>If you would like to report any violations of this policy or get more information on this website, please contact us at <a href="mailto:support@mdldownloader.com">support@mdldownloader.com</a>.</p>
+                </div>
+            </main>
+
+            <!-- Right Sidebar: Passive Display Ad Slots (Never overlaps download UI) -->
+            <aside class="side-rail">
+                <div class="bmc-box">
+                    <h4>☕ Support MDLDownloader</h4>
+                    <p>Free tool created for gamers. If this helped you back up your clips, consider supporting the project!</p>
+                    <a href="https://buymeacoffee.com/bblaine" target="_blank" rel="noopener" class="bmc-btn" style="width: 100%; justify-content: center; box-sizing: border-box;">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M20.216 6.415l-.132-.666c-.119-.597-.388-1.156-.78-1.619-.391-.462-.892-.81-1.455-1.01-1.09-.39-4.24-.39-4.24-.39s-3.15 0-4.24.39c-.563.2-1.064.548-1.455 1.01-.392.463-.661 1.022-.78 1.619l-.132.666H4.25A2.25 2.25 0 002 8.665v2.835a6.75 6.75 0 006 6.697V20H5.75a.75.75 0 000 1.5h12.5a.75.75 0 000-1.5H16v-1.803a6.75 6.75 0 006-6.697V8.665a2.25 2.25 0 00-2.25-2.25h-2.75zm.75 5.085A5.257 5.257 0 0116.5 16.5v-7h4.466v2z"/></svg>
+                        <span>Buy Me a Coffee</span>
+                    </a>
+                </div>
+
+                <div class="ad-box">
+                    <div class="ad-label">Advertisement</div>
+                    <div style="width: 100%; min-height: 250px; background: #0c0d0f; border-radius: 4px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                        <!-- BEGIN AADS AD UNIT 2461546 -->
+                        <iframe data-aa='2461546' src='//acceptable.a-ads.com/2461546/?size=Adaptive'
+                            style='border:0; padding:0; width:100%; height:250px; overflow:hidden; display:block; margin:auto;'></iframe>
+                        <!-- END AADS AD UNIT 2461546 -->
+                    </div>
+                </div>
+
+                <div class="ad-box">
+                    <div class="ad-label">Advertisement</div>
+                    <div style="width: 100%; min-height: 250px; background: #0c0d0f; border-radius: 4px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                        <!-- BEGIN AADS AD UNIT 2461546 (Slot 2) -->
+                        <iframe data-aa='2461546' src='//acceptable.a-ads.com/2461546/?size=Adaptive'
+                            style='border:0; padding:0; width:100%; height:250px; overflow:hidden; display:block; margin:auto;'></iframe>
+                        <!-- END AADS AD UNIT 2461546 -->
+                    </div>
+                </div>
+            </aside>
+
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-inner">
+            <div>MDLDownloader is an independent utility and is not affiliated with or endorsed by Medal.tv.</div>
+            <div>
+                <a href="#privacy-policy" style="color:#9ca3af;">Privacy Policy</a> • © 2026 MDLDownloader
+            </div>
+        </div>
+    </footer>
+
+    <script src="/app.js"></script>
+</body>
+</html>
