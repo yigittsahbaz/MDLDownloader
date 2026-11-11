@@ -4,6 +4,7 @@ npm-debug.log*
 
 # PyInstaller build artifacts (keep final .exe, ignore temp build folders)
 desktop-app/build/
+desktop-app/dist/
 desktop-app/*.spec
 __pycache__/
 *.pyc

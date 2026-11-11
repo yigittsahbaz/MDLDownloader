@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MDLDownloader — Extension Full-Page Downloader</title>
+    <link rel="icon" type="image/png" href="icons/icon48.png">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: #121316;
+            color: #e4e6eb;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            min-height: 100vh;
+            padding: 28px 20px 60px;
+        }
+        .wrap {
+            max-width: 860px;
+            margin: 0 auto;
+        }
+        .topbar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding-bottom: 16px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #22252a;
+        }
+        .brand {
+            font-family: 'Segoe UI Black', 'Arial Black', Impact, sans-serif;
+            font-weight: 900;
+            font-size: 20px;
+            letter-spacing: 0.8px;
+            color: #ffffff;
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            text-shadow: 0 2px 10px rgba(245, 184, 0, 0.25);
+        }
+        .mdl-badge {
+            background: linear-gradient(135deg, #ffd000 0%, #f59e0b 100%);
+            color: #0c0d0f;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-right: 4px;
+            font-weight: 900;
+            transform: skewX(-8deg);
+            box-shadow: 0 0 12px rgba(245, 184, 0, 0.35);
+            display: inline-block;
+        }
+        .dl-text {
+            background: linear-gradient(90deg, #ffffff 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 0.5px;
+        }
+        .tag-pill {
+            font-size: 11px;
+            color: #9ca3af;
+            background: #181a20;
+            border: 1px solid #262930;
+            padding: 4px 10px;
+            border-radius: 4px;
+        }
+        .grid-top {
+            display: grid;
+            grid-template-columns: 1fr 1.3fr;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+        @media (max-width: 680px) {
+            .grid-top { grid-template-columns: 1fr; }
+        }
+        .card {
+            background: #181a20;
+            border: 1px solid #262930;
+            border-radius: 6px;
+            padding: 14px;
+        }
+        .card-label {
+            font-size: 11px;
+            color: #9ca3af;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            font-weight: 600;
+        }
+        .session-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .session-text {
+            font-weight: 600;
+            font-size: 13px;
+            color: #ffffff;
+        }
+        .session-text.logged { color: #4ade80; }
+        .search-row {
+            display: flex;
+            gap: 8px;
+        }
+        .input {
+            flex: 1;
+            height: 36px;
+            padding: 0 11px;
+            background: #121316;
+            border: 1px solid #32363f;
+            border-radius: 4px;
+            color: #ffffff;
+            font-size: 13px;
+            outline: none;
+        }
+        .input:focus { border-color: #f5b800; }
+        .btn {
+            height: 36px;
+            padding: 0 16px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.15s;
+        }
+        .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+        .btn-gold { background: #f5b800; color: #0c0d0f; }
+        .btn-gold:hover:not(:disabled) { background: #ffca28; }
+        .btn-dark { background: #252830; color: #e4e6eb; border: 1px solid #383c47; }
+        .btn-dark:hover:not(:disabled) { border-color: #f5b800; color: #f5b800; }
+        .btn-danger { background: #252830; color: #ef4444; border: 1px solid #4b2327; }
+
+        .panel {
+            background: #181a20;
+            border: 1px solid #262930;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .panel-head {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding-bottom: 12px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #262930;
+        }
+        .panel-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #f5b800;
+        }
+        .summary-pill {
+            font-size: 12px;
+            color: #e4e6eb;
+            background: #121316;
+            border: 1px solid #2e323c;
+            padding: 4px 10px;
+            border-radius: 4px;
+        }
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            gap: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 4px;
+            margin-bottom: 14px;
+        }
+        .game-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #121316;
+            border: 1px solid #262930;
+            border-radius: 4px;
+            padding: 8px 10px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .game-item:hover { border-color: #3f4452; }
+        .game-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+        }
+        .game-name {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 13px;
+        }
+        .game-count {
+            font-family: Consolas, monospace;
+            font-size: 11px;
+            color: #f5b800;
+            background: rgba(245, 184, 0, 0.12);
+            padding: 2px 7px;
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+        .actions-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #262930;
+        }
+        .actions-right {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .progress-panel {
+            display: none;
+            background: #181a20;
+            border: 1px solid #262930;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .progress-panel.visible { display: block; }
+        .progress-top {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 8px;
+            color: #e4e6eb;
+        }
+        .progress-track {
+            width: 100%;
+            height: 10px;
+            background: #0c0d0f;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: #f5b800;
+            transition: width 0.15s;
+        }
+        .note-box {
+            background: #181a20;
+            border: 1px solid #262930;
+            border-left: 3px solid #f5b800;
+            border-radius: 4px;
+            padding: 10px 14px;
+            font-size: 12px;
+            color: #9ca3af;
+            line-height: 1.5;
+        }
+        .note-box strong { color: #e4e6eb; }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <div class="topbar">
+        <div class="brand"><span class="mdl-badge">MDL</span><span class="dl-text">DOWNLOADER</span> <span style="font-family: 'Segoe UI', system-ui, sans-serif; font-weight:500; font-size:13px; color:#9ca3af; margin-left:6px; -webkit-text-fill-color:#9ca3af;">Full-Page Tab</span></div>
+        <div class="tag-pill">Direct Medal.tv CDN • Single MyClips.zip • Safe to switch tabs</div>
+    </div>
+
+    <div class="grid-top">
+        <div class="card">
+            <div class="card-label">Medal.tv Session</div>
+            <div class="session-row">
+                <div id="sessionStatus" class="session-text">Checking session...</div>
+                <button id="actionSessionBtn" type="button" class="btn btn-dark">Log In on Medal.tv</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-label">Scan Any Username or Profile URL</div>
+            <form id="manualSearchForm" class="search-row">
+                <input id="manualProfileInput" type="text" class="input" placeholder="https://medal.tv/u/username or username" required />
+                <button id="manualScanBtn" type="submit" class="btn btn-gold">Scan</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="gamesPanel" class="panel" style="display:none;">
+        <div class="panel-head">
+            <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                <input type="checkbox" id="toggleAllGames" checked />
+                <span id="targetUserLabel" class="panel-title">Select Games</span>
+            </label>
+            <div id="selectedSummary" class="summary-pill">0 clips selected • est. ~0 MB</div>
+        </div>
+
+        <div id="gamesGrid" class="games-grid"></div>
+
+        <div class="actions-bar">
+            <label style="display:flex; align-items:center; gap:7px; font-size:13px; color:#d1d5db; cursor:pointer;">
+                <input type="checkbox" id="subfoldersCheck" checked />
+                <span>Organize into Game Subfolders inside MyClips.zip</span>
+            </label>
+            <div class="actions-right">
+                <button id="downloadZipBtn" type="button" class="btn btn-gold" disabled>Download Single MyClips.zip</button>
+                <button id="downloadFolderBtn" type="button" class="btn btn-dark" disabled>Save to Local Folder</button>
+                <button id="retryFailedBtn" type="button" class="btn btn-gold" style="display:none;">Retry Failed (<span id="failedCount">0</span>)</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="progressPanel" class="progress-panel">
+        <div class="progress-top">
+            <span id="progressLabel">Preparing download...</span>
+            <span>
+                <span id="progressCount" style="font-family:Consolas, monospace;">0 / 0</span>
+                <button id="cancelBtn" type="button" class="btn btn-danger" style="height:26px; padding:0 10px; font-size:11px; margin-left:10px;">Cancel</button>
+            </span>
+        </div>
+        <div class="progress-track">
+            <div id="progressFill" class="progress-fill"></div>
+        </div>
+    </div>
+
+    <div id="statusNote" class="note-box">
+        Click <strong>My Clips</strong> or scan a username above. Because this runs in its own full browser tab, you can switch tabs or minimize the window without interrupting downloads.
+    </div>
+</div>
+
+<script type="module" src="downloader.js"></script>
+</body>
+</html>

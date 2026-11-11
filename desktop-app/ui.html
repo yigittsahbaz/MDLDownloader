@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MDLDownloader Desktop</title>
+    <link rel="icon" href="app.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #0c0d0f; }
+        ::-webkit-scrollbar-thumb { background: #2c303a; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #f5b800; }
+
+        body {
+            background-color: #121316;
+            color: #e4e6eb;
+            font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            line-height: 1.45;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-y: scroll;
+        }
+        a { color: #f5b800; text-decoration: none; cursor: pointer; }
+        a:hover { text-decoration: underline; }
+
+        /* Top App Header */
+        .app-header {
+            background: #0c0d0f;
+            border-bottom: 1px solid #22252a;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        .brand {
+            font-family: 'Orbitron', 'Segoe UI Black', 'Arial Black', sans-serif;
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            font-weight: 900;
+            font-size: 20px;
+            letter-spacing: 0.8px;
+            color: #ffffff;
+            text-shadow: 0 2px 10px rgba(245, 184, 0, 0.25);
+            user-select: none;
+        }
+        .mdl-box {
+            background: linear-gradient(135deg, #ffd000 0%, #f59e0b 100%);
+            color: #0c0d0f;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-right: 4px;
+            transform: skewX(-8deg);
+            box-shadow: 0 0 12px rgba(245, 184, 0, 0.4);
+            display: inline-block;
+            font-weight: 900;
+        }
+        .dl-text {
+            background: linear-gradient(90deg, #ffffff 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 0.5px;
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+        }
+        .badge-pill {
+            background: #181a20;
+            border: 1px solid #2c303a;
+            color: #9ca3af;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .bmc-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #ffdd00;
+            color: #0c0d0f !important;
+            font-weight: 700;
+            padding: 5px 11px;
+            border-radius: 4px;
+            font-size: 12px;
+            text-decoration: none !important;
+        }
+        .bmc-btn:hover { background: #ffea55; }
+
+        /* Top Search & Configuration Section */
+        .hero-section {
+            background: #181a20;
+            border-bottom: 1px solid #262930;
+            padding: 20px 24px;
+        }
+        .container {
+            max-width: 1140px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        .hero-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+        .hero-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+        .hero-title span { color: #f5b800; }
+        .hero-sub {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        .input-group {
+            display: flex;
+            height: 44px;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid #32363f;
+            background: #ffffff;
+        }
+        .mode-label {
+            background: #252830;
+            color: #e4e6eb;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 0 14px;
+            display: flex;
+            align-items: center;
+            border-right: 1px solid #32363f;
+            white-space: nowrap;
+            user-select: none;
+        }
+        .search-input {
+            flex: 1;
+            border: none;
+            padding: 0 14px;
+            font-size: 14px;
+            color: #111827;
+            outline: none;
+        }
+        .search-btn {
+            background: #f5b800;
+            color: #0c0d0f;
+            border: none;
+            padding: 0 24px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.15s;
+            white-space: nowrap;
+        }
+        .search-btn:hover:not(:disabled) { background: #ffca28; }
+        .search-btn:disabled { background: #6b7280; color: #1f2937; cursor: not-allowed; }
+
+        /* Settings Grid under search bar */
+        .sub-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 12px;
+        }
+        @media (max-width: 780px) {
+            .sub-controls { grid-template-columns: 1fr; }
+        }
+        .mini-panel {
+            background: #121316;
+            border: 1px solid #262930;
+            border-radius: 5px;
+            padding: 10px 12px;
+        }
+        .mini-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: #9ca3af;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        .mini-row {
+            display: flex;
+            gap: 6px;
+        }
+        .dark-input {
+            flex: 1;
+            height: 32px;
+            padding: 0 10px;
+            background: #181a20;
+            border: 1px solid #32363f;
+            color: #ffffff;
+            border-radius: 4px;
+            font-size: 12px;
+            outline: none;
+        }
+        .dark-input:focus { border-color: #f5b800; }
+        .small-btn {
+            height: 32px;
+            padding: 0 11px;
+            background: #252830;
+            color: #e4e6eb;
+            border: 1px solid #32363f;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .small-btn:hover { border-color: #f5b800; color: #f5b800; }
+
+        .cookie-guide {
+            display: none;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #22252a;
+            font-size: 11px;
+            color: #9ca3af;
+            line-height: 1.55;
+        }
+        .cookie-guide.open { display: block; }
+
+        /* Main Workspace */
+        .main-body {
+            flex: 1;
+            padding: 18px 24px 36px;
+        }
+        .status-bar {
+            display: none;
+            background: #181a20;
+            border: 1px solid #2b2f38;
+            border-radius: 6px;
+            padding: 12px 16px;
+            margin-bottom: 14px;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .status-bar.visible { display: flex; }
+        .user-meta { display: flex; align-items: center; gap: 10px; }
+        .avatar { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; display: none; border: 1px solid #32363f; }
+        .st-title { font-size: 14px; font-weight: 700; color: #ffffff; }
+        .st-sub { font-size: 12px; color: #9ca3af; }
+        .warn-pill {
+            display: none;
+            font-size: 12px;
+            color: #f5b800;
+            background: rgba(245, 184, 0, 0.1);
+            border: 1px solid rgba(245, 184, 0, 0.3);
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+
+        /* Toolbar */
+        .toolbar {
+            display: none;
+            background: #181a20;
+            border: 1px solid #2b2f38;
+            border-radius: 6px;
+            padding: 12px 14px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .toolbar.visible { display: flex; }
+        .tb-group {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+        }
+        .ctrl-select, .ctrl-input {
+            height: 32px;
+            padding: 0 9px;
+            background: #121316;
+            border: 1px solid #32363f;
+            color: #e4e6eb;
+            border-radius: 4px;
+            font-size: 12px;
+            outline: none;
+        }
+        .ctrl-select:focus, .ctrl-input:focus { border-color: #f5b800; }
+        .check-pill {
+            font-size: 12px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #d1d5db;
+            background: #121316;
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: 1px solid #32363f;
+            user-select: none;
+        }
+        .est-badge {
+            font-size: 11px;
+            color: #f5b800;
+            background: rgba(245, 184, 0, 0.12);
+            padding: 5px 9px;
+            border-radius: 4px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        .btn-action {
+            height: 34px;
+            padding: 0 16px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: opacity 0.15s, background 0.15s;
+            white-space: nowrap;
+        }
+        .btn-action:disabled { opacity: 0.45; cursor: not-allowed; }
+        .btn-green { background: #2ea043; color: #ffffff; }
+        .btn-green:hover:not(:disabled) { background: #36b54d; }
+        .btn-gold { background: #f5b800; color: #0c0d0f; }
+        .btn-gold:hover:not(:disabled) { background: #ffca28; }
+
+        /* Download Progress Card */
+        .progress-panel {
+            display: none;
+            background: #181a20;
+            border: 1px solid #2b2f38;
+            border-radius: 6px;
+            padding: 12px 14px;
+            margin-bottom: 14px;
+        }
+        .progress-panel.visible { display: block; }
+        .progress-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            margin-bottom: 7px;
+            gap: 10px;
+        }
+        .progress-track {
+            width: 100%;
+            height: 9px;
+            background: #0c0d0f;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #f59e0b, #ffd000);
+            transition: width 0.15s ease;
+        }
+        .log-box {
+            display: none;
+            margin-top: 10px;
+            background: #0c0d0f;
+            border: 1px solid #22252a;
+            border-radius: 4px;
+            padding: 8px 10px;
+            font-family: Consolas, monospace;
+            font-size: 11px;
+            color: #9ca3af;
+            max-height: 120px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        .log-box.open { display: block; }
+
+        /* Pagination & Grid */
+        .pagination-bar {
+            display: none;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding: 8px 12px;
+            background: #181a20;
+            border: 1px solid #262930;
+            border-radius: 5px;
+        }
+        .page-info { font-size: 12px; color: #9ca3af; }
+        .page-btns { display: flex; gap: 4px; flex-wrap: wrap; }
+        .page-btn {
+            min-width: 30px;
+            height: 28px;
+            padding: 0 9px;
+            border-radius: 4px;
+            border: 1px solid #2e323c;
+            background: #121316;
+            color: #d1d5db;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .page-btn:hover:not(:disabled) { border-color: #f5b800; color: #ffffff; }
+        .page-btn.active { background: #f5b800; border-color: #f5b800; color: #0c0d0f; font-weight: 700; }
+        .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .page-dots { color: #6b7280; padding: 0 4px; font-size: 12px; }
+
+        .clips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 14px;
+        }
+        .clip-card {
+            background: #181a20;
+            border: 1px solid #262930;
+            border-radius: 6px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+            transition: border-color 0.15s, transform 0.15s;
+        }
+        .clip-card:hover {
+            border-color: #3f4452;
+            transform: translateY(-2px);
+        }
+        .clip-card.selected {
+            border-color: #f5b800 !important;
+            box-shadow: 0 0 12px rgba(245, 184, 0, 0.15);
+        }
+        .clip-card.locked {
+            opacity: 0.72;
+            border-color: rgba(239, 68, 68, 0.38);
+            cursor: not-allowed;
+        }
+        .clip-card.locked:hover {
+            transform: none;
+            border-color: rgba(239, 68, 68, 0.7);
+        }
+        .clip-card.locked .thumb-wrap img {
+            filter: grayscale(75%) brightness(0.5);
+        }
+        .clip-card.locked .thumb-top-left {
+            cursor: not-allowed;
+            color: #9ca3af;
+        }
+        .lock-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            background: rgba(12, 13, 15, 0.35);
+        }
+        .lock-pill {
+            background: rgba(18, 19, 22, 0.92);
+            border: 1px solid rgba(239, 68, 68, 0.65);
+            color: #fca5a5;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+        }
+        .clip-footer {
+            padding: 6px 11px;
+            border-top: 1px solid #22252a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+        }
+        .thumb-wrap {
+            position: relative;
+            aspect-ratio: 16 / 9;
+            background: #0c0d0f;
+            overflow: hidden;
+        }
+        .thumb-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .thumb-top-left {
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            z-index: 3;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(0, 0, 0, 0.78);
+            padding: 2px 7px;
+            border-radius: 3px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+        .thumb-duration {
+            position: absolute;
+            bottom: 6px;
+            right: 6px;
+            z-index: 3;
+            background: rgba(0, 0, 0, 0.82);
+            color: #ffffff;
+            font-size: 11px;
+            padding: 1px 6px;
+            border-radius: 3px;
+            font-family: Consolas, monospace;
+        }
+        .clip-body { padding: 9px 11px; }
+        .clip-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #e4e6eb;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 4px;
+        }
+        .clip-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: #9ca3af;
+        }
+
+        /* Empty Initial State */
+        .empty-state {
+            text-align: center;
+            padding: 56px 20px;
+            color: #9ca3af;
+            border: 1px dashed #262930;
+            border-radius: 8px;
+            background: #15171c;
+        }
+        .empty-state h3 { color: #ffffff; font-size: 16px; margin-bottom: 6px; }
+        .empty-state p { font-size: 13px; max-width: 520px; margin: 0 auto; }
+    </style>
+</head>
+<body>
+
+<header class="app-header">
+    <div style="display:flex; align-items:center; gap:10px;">
+        <div class="brand">
+            <span class="mdl-box">MDL</span><span class="dl-text">DOWNLOADER</span>
+        </div>
+        <span class="badge-pill">Desktop Edition • 8-Thread Engine</span>
+    </div>
+    <div class="header-right">
+        <a onclick="openExternal('https://github.com/yigittsahbaz/MDLDownloader')" style="color:#9ca3af;">Open Source on GitHub ↗</a>
+        <a onclick="openExternal('https://buymeacoffee.com/bblaine')" class="bmc-btn">☕ Buy Me a Coffee</a>
+    </div>
+</header>
+
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-row">
+            <div class="hero-title"><span>Medal.tv</span> Bulk Clip Downloader</div>
+            <div class="hero-sub">No Watermark • Original 1080p MP4 • Direct Disk Packaging (ZIP64)</div>
+        </div>
+
+        <form id="searchForm">
+            <div class="input-group">
+                <div class="mode-label">Profile / User</div>
+                <input id="profileInput" type="text" class="search-input" placeholder="https://medal.tv/u/username or username" required />
+                <button id="fetchBtn" type="submit" class="search-btn">Fetch Clips</button>
+            </div>
+        </form>
+
+        <div class="sub-controls">
+            <!-- Session Cookie Box -->
+            <div class="mini-panel">
+                <div class="mini-label">
+                    <span>Optional Session Cookie / Key (For Private &amp; Guest-Protected Clips)</span>
+                    <a onclick="toggleCookieHelp()" id="cookieHelpToggle" style="color:#f5b800;">How to get (No Code) ▾</a>
+                </div>
+                <div class="mini-row">
+                    <input id="authKeyInput" type="password" class="dark-input" placeholder="Paste medal-auth cookie value OR mdl_... key" />
+                    <button type="button" id="showKeyBtn" class="small-btn">Show</button>
+                </div>
+                <div id="cookieGuide" class="cookie-guide">
+                    1. Log in on <strong>medal.tv</strong> in your browser and press <strong>F12</strong>.<br>
+                    2. Open the <strong>Application</strong> tab &rarr; <strong>Cookies</strong> &rarr; <strong>https://medal.tv</strong> &rarr; click <strong>medal-auth</strong>.<br>
+                    3. Copy the entire <strong>Cookie Value</strong> and paste it above (read locally in RAM, never saved).
+                </div>
+            </div>
+
+            <!-- Output Directory Box -->
+            <div class="mini-panel">
+                <div class="mini-label">
+                    <span>Output Location (Saves MyClips_&lt;username&gt;.zip here)</span>
+                    <a onclick="openOutFolder()" style="color:#cbd5e1;">Open Folder ↗</a>
+                </div>
+                <div class="mini-row">
+                    <input id="outDirInput" type="text" class="dark-input" placeholder="Downloads folder..." />
+                    <button type="button" id="browseBtn" class="small-btn">Browse...</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<main class="main-body">
+    <div class="container">
+        <div id="statusBar" class="status-bar">
+            <div class="user-meta">
+                <img id="profileAvatar" class="avatar" src="" alt="" />
+                <div>
+                    <div id="statusTitle" class="st-title">Scanning...</div>
+                    <div id="statusSub" class="st-sub">Connecting to Medal.tv...</div>
+                </div>
+            </div>
+            <div id="protectedWarning" class="warn-pill"></div>
+        </div>
+
+        <div id="toolbar" class="toolbar">
+            <div class="tb-group">
+                <label class="check-pill">
+                    <input type="checkbox" id="selectAllCheckbox" checked />
+                    <span>Select All (<span id="selectedCount">0</span>)</span>
+                </label>
+                <span id="estSizeBadge" class="est-badge">est. ~0 MB</span>
+                <label class="check-pill">
+                    <input type="checkbox" id="groupByGameCheckbox" checked />
+                    <span>Game Subfolders</span>
+                </label>
+                <label class="check-pill" title="Uncheck to save loose MP4 files with Resume support">
+                    <input type="checkbox" id="zipModeCheckbox" checked />
+                    <span>Single .ZIP</span>
+                </label>
+                <select id="gameFilter" class="ctrl-select"><option value="ALL">All Games</option></select>
+                <select id="dateFilter" class="ctrl-select">
+                    <option value="ALL">All Dates</option>
+                    <option value="30D">Last 30 Days</option>
+                    <option value="90D">Last 3 Months</option>
+                    <option value="180D">Last 6 Months</option>
+                    <option value="CUSTOM">Custom Range...</option>
+                </select>
+                <div id="customDateWrap" style="display:none; align-items:center; gap:4px;">
+                    <input id="dateFrom" type="date" class="ctrl-select" />
+                    <span style="color:#6b7280;">–</span>
+                    <input id="dateTo" type="date" class="ctrl-select" />
+                </div>
+                <select id="sortFilter" class="ctrl-select">
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                    <option value="views">Most Views</option>
+                    <option value="duration">Longest First</option>
+                </select>
+                <input id="titleSearch" type="text" class="ctrl-input" placeholder="Search title..." style="width:140px;" />
+            </div>
+            <div class="tb-group">
+                <button id="startDownloadBtn" type="button" class="btn-action btn-green" disabled>Download Selected (0)</button>
+                <button id="retryFailedBtn" type="button" class="btn-action btn-gold" style="display:none;">Retry Failed (<span id="failedCount">0</span>)</button>
+            </div>
+        </div>
+
+        <div id="progressPanel" class="progress-panel">
+            <div class="progress-top">
+                <span id="progressText">Preparing...</span>
+                <span>
+                    <span id="progressStats" style="font-family:Consolas, monospace;">0 / 0</span>
+                    <a onclick="toggleLogBox()" style="margin-left:10px; color:#9ca3af;">Log</a>
+                    <a onclick="cancelCurrent()" style="margin-left:10px; color:#ef4444; font-weight:700;">Cancel</a>
+                </span>
+            </div>
+            <div class="progress-track">
+                <div id="progressBar" class="progress-fill"></div>
+            </div>
+            <div id="logBox" class="log-box"></div>
+        </div>
+
+        <div id="emptyState" class="empty-state">
+            <h3>Ready to Back Up Your Medal.tv Clips</h3>
+            <p>Enter any Medal username or profile link above and click <strong>Fetch Clips</strong>. You can preview clips on hover, filter by game or date, select ranges with <strong>Shift + Click</strong>, and package thousands of clips at 8x desktop speed.</p>
+        </div>
+
+        <div id="paginationTop" class="pagination-bar">
+            <span id="pageInfoTop" class="page-info"></span>
+            <div id="pageButtonsTop" class="page-btns"></div>
+        </div>
+
+        <div id="clipsGrid" class="clips-grid"></div>
+
+        <div id="paginationBottom" class="pagination-bar" style="margin-top:14px;">
+            <span id="pageInfoBottom" class="page-info"></span>
+            <div id="pageButtonsBottom" class="page-btns"></div>
+        </div>
+    </div>
+</main>
+
+<script>
+const PAGE_SIZE = 36;
+const state = {
+    profile: null,
+    allClips: [],
+    filteredClips: [],
+    selectedIds: new Set(),
+    failedClips: [],
+    currentPage: 1,
+    lastAnchorId: null,
+    isBusy: false
+};
+
+const searchForm = document.getElementById('searchForm');
+const profileInput = document.getElementById('profileInput');
+const fetchBtn = document.getElementById('fetchBtn');
+const authKeyInput = document.getElementById('authKeyInput');
+const showKeyBtn = document.getElementById('showKeyBtn');
+const outDirInput = document.getElementById('outDirInput');
+const browseBtn = document.getElementById('browseBtn');
+
+const emptyState = document.getElementById('emptyState');
+const statusBar = document.getElementById('statusBar');
+const profileAvatar = document.getElementById('profileAvatar');
+const statusTitle = document.getElementById('statusTitle');
+const statusSub = document.getElementById('statusSub');
+const protectedWarning = document.getElementById('protectedWarning');
+
+const toolbar = document.getElementById('toolbar');
+const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+const selectedCountEl = document.getElementById('selectedCount');
+const estSizeBadge = document.getElementById('estSizeBadge');
+const groupByGameCheckbox = document.getElementById('groupByGameCheckbox');
+const zipModeCheckbox = document.getElementById('zipModeCheckbox');
+const gameFilter = document.getElementById('gameFilter');
+const dateFilter = document.getElementById('dateFilter');
+const customDateWrap = document.getElementById('customDateWrap');
+const dateFrom = document.getElementById('dateFrom');
+const dateTo = document.getElementById('dateTo');
+const sortFilter = document.getElementById('sortFilter');
+const titleSearch = document.getElementById('titleSearch');
+const startDownloadBtn = document.getElementById('startDownloadBtn');
+const retryFailedBtn = document.getElementById('retryFailedBtn');
+const failedCountEl = document.getElementById('failedCount');
+
+const progressPanel = document.getElementById('progressPanel');
+const progressText = document.getElementById('progressText');
+const progressStats = document.getElementById('progressStats');
+const progressBar = document.getElementById('progressBar');
+const logBox = document.getElementById('logBox');
+
+const paginationTop = document.getElementById('paginationTop');
+const pageInfoTop = document.getElementById('pageInfoTop');
+const pageButtonsTop = document.getElementById('pageButtonsTop');
+const paginationBottom = document.getElementById('paginationBottom');
+const pageInfoBottom = document.getElementById('pageInfoBottom');
+const pageButtonsBottom = document.getElementById('pageButtonsBottom');
+const clipsGrid = document.getElementById('clipsGrid');
+
+const __rpcPending = new Map();
+let __rpcSeq = 0;
+window.__resolveDesktopRpc = function(id, res) {
+    const p = __rpcPending.get(id);
+    if (p) {
+        __rpcPending.delete(id);
+        p.resolve(res);
+    }
+};
+function callDesktop(method, ...args) {
+    return new Promise((resolve) => {
+        if (!window.chrome || !window.chrome.webview) {
+            resolve(null);
+            return;
+        }
+        const id = String(++__rpcSeq);
+        __rpcPending.set(id, { resolve });
+        window.chrome.webview.postMessage(JSON.stringify({ id, method, args }));
+    });
+}
+
+window.addEventListener('DOMContentLoaded', async () => {
+    try {
+        const info = await callDesktop('get_init_info');
+        if (info && info.defaultDir) outDirInput.value = info.defaultDir;
+    } catch {}
+});
+
+function openExternal(url) {
+    callDesktop('open_external', url);
+}
+function openOutFolder() {
+    callDesktop('open_folder', outDirInput.value);
+}
+function toggleCookieHelp() {
+    document.getElementById('cookieGuide').classList.toggle('open');
+}
+function toggleLogBox() {
+    logBox.classList.toggle('open');
+}
+function cancelCurrent() {
+    callDesktop('cancel_operation');
+    progressText.textContent = 'Cancelling...';
+}
+
+showKeyBtn.addEventListener('click', () => {
+    authKeyInput.type = authKeyInput.type === 'password' ? 'text' : 'password';
+    showKeyBtn.textContent = authKeyInput.type === 'password' ? 'Show' : 'Hide';
+});
+
+browseBtn.addEventListener('click', async () => {
+    const chosen = await callDesktop('choose_folder', outDirInput.value);
+    if (chosen) outDirInput.value = chosen;
+});
+
+function appendLog(line) {
+    if (!line) return;
+    logBox.textContent += line + '\n';
+    logBox.scrollTop = logBox.scrollHeight;
+}
+
+function formatDuration(sec) {
+    const s = Math.round(Number(sec) || 0);
+    return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+}
+function formatDate(ts) {
+    if (!ts) return '';
+    const d = new Date(Number(ts));
+    return isNaN(d.getTime()) ? '' : d.toISOString().split('T')[0];
+}
+function formatBytes(bytes) {
+    if (!bytes || bytes <= 0) return '0 MB';
+    if (bytes >= 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} GB`;
+    return `${Math.round(bytes / (1024 * 1024))} MB`;
+}
+
+// Called asynchronously from Python worker threads
+window.onDesktopEvent = function(ev) {
+    if (!ev) return;
+    if (ev.type === 'fetch_progress') {
+        statusSub.textContent = ev.message;
+    } else if (ev.type === 'fetch_done') {
+        state.isBusy = false;
+        fetchBtn.disabled = false;
+        fetchBtn.textContent = 'Fetch Clips';
+        if (ev.error) {
+            statusTitle.textContent = 'Error';
+            statusSub.textContent = ev.error;
+            return;
+        }
+        state.profile = ev.profile;
+        state.allClips = ev.clips || [];
+        state.currentPage = 1;
+        state.lastAnchorId = null;
+        if (ev.profile.thumbnail) {
+            profileAvatar.src = ev.profile.thumbnail;
+            profileAvatar.style.display = 'block';
+        }
+        statusTitle.textContent = `${ev.profile.displayName} (@${ev.profile.userName})`;
+        const unlocked = state.allClips.filter(c => c.videoUrl && !c.isProtected);
+        const prot = state.allClips.filter(c => c.isProtected).length;
+        statusSub.textContent = `Total: ${state.allClips.length} clips (${unlocked.length} unlocked and ready).`;
+        if (prot > 0) {
+            protectedWarning.style.display = 'block';
+            protectedWarning.textContent = `${prot} clip(s) require your medal-auth cookie.`;
+        } else {
+            protectedWarning.style.display = 'none';
+        }
+        state.selectedIds = new Set(unlocked.map(c => c.contentId));
+        emptyState.style.display = 'none';
+        toolbar.classList.add('visible');
+        populateFilters();
+        applyFilters(true);
+    } else if (ev.type === 'dl_progress') {
+        progressBar.style.width = `${ev.percent || 0}%`;
+        progressText.textContent = ev.message || 'Downloading...';
+        progressStats.textContent = `${ev.done} / ${ev.total} (${formatBytes(ev.bytes || 0)})`;
+        if (ev.log) appendLog(ev.log);
+    } else if (ev.type === 'dl_done') {
+        state.isBusy = false;
+        fetchBtn.disabled = false;
+        updateCounts();
+        if (ev.cancelled) {
+            progressText.textContent = 'Download cancelled.';
+            return;
+        }
+        if (ev.error) {
+            progressText.textContent = `Error: ${ev.error}`;
+            return;
+        }
+        progressBar.style.width = '100%';
+        state.failedClips = ev.failedClips || [];
+        if (state.failedClips.length > 0) {
+            failedCountEl.textContent = state.failedClips.length;
+            retryFailedBtn.style.display = 'inline-block';
+        } else {
+            retryFailedBtn.style.display = 'none';
+        }
+        progressText.textContent = ev.summary || 'Download completed!';
+        if (ev.log) appendLog(ev.log);
+    }
+};
+
+searchForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (state.isBusy) return;
+    const q = profileInput.value.trim();
+    if (!q) return;
+
+    state.isBusy = true;
+    fetchBtn.disabled = true;
+    fetchBtn.textContent = 'Fetching...';
+    emptyState.style.display = 'none';
+    statusBar.classList.add('visible');
+    toolbar.classList.remove('visible');
+    progressPanel.classList.remove('visible');
+    paginationTop.style.display = 'none';
+    paginationBottom.style.display = 'none';
+    clipsGrid.innerHTML = '';
+    profileAvatar.style.display = 'none';
+    protectedWarning.style.display = 'none';
+    statusTitle.textContent = `Resolving "${q}"...`;
+    statusSub.textContent = 'Connecting to Medal.tv API...';
+
+    await callDesktop('start_fetch', q, authKeyInput.value.trim());
+});
+
+function populateFilters() {
+    const games = Array.from(new Set(state.allClips.map(c => c.game))).sort();
+    gameFilter.innerHTML = `<option value="ALL">All Games (${state.allClips.length})</option>`;
+    for (const g of games) {
+        const cnt = state.allClips.filter(c => c.game === g).length;
+        const opt = document.createElement('option');
+        opt.value = g;
+        opt.textContent = `${g} (${cnt})`;
+        gameFilter.appendChild(opt);
+    }
+
+    const yearsMap = new Map();
+    for (const c of state.allClips) {
+        const d = new Date(Number(c.created));
+        if (!isNaN(d.getTime())) yearsMap.set(d.getFullYear(), (yearsMap.get(d.getFullYear()) || 0) + 1);
+    }
+    const years = Array.from(yearsMap.keys()).sort((a, b) => b - a);
+    dateFilter.innerHTML = `
+        <option value="ALL">All Dates (${state.allClips.length})</option>
+        <option value="30D">Last 30 Days</option>
+        <option value="90D">Last 3 Months</option>
+        <option value="180D">Last 6 Months</option>
+    `;
+    for (const y of years) {
+        const opt = document.createElement('option');
+        opt.value = `YEAR:${y}`;
+        opt.textContent = `Year ${y} (${yearsMap.get(y)})`;
+        dateFilter.appendChild(opt);
+    }
+    const customOpt = document.createElement('option');
+    customOpt.value = 'CUSTOM';
+    customOpt.textContent = 'Custom Range...';
+    dateFilter.appendChild(customOpt);
+    customDateWrap.style.display = 'none';
+}
+
+function applyFilters(resetPage = true) {
+    const gVal = gameFilter.value;
+    const dVal = dateFilter.value;
+    const qVal = titleSearch.value.trim().toLowerCase();
+    customDateWrap.style.display = dVal === 'CUSTOM' ? 'inline-flex' : 'none';
+
+    let minTs = null, maxTs = null, targetYear = null;
+    const now = Date.now();
+    if (dVal === '30D') minTs = now - 30 * 86400000;
+    else if (dVal === '90D') minTs = now - 90 * 86400000;
+    else if (dVal === '180D') minTs = now - 180 * 86400000;
+    else if (dVal.startsWith('YEAR:')) targetYear = Number(dVal.slice(5));
+    else if (dVal === 'CUSTOM') {
+        if (dateFrom.value) minTs = new Date(`${dateFrom.value}T00:00:00`).getTime();
+        if (dateTo.value) maxTs = new Date(`${dateTo.value}T23:59:59.999`).getTime();
+    }
+
+    state.filteredClips = state.allClips.filter(c => {
+        if (gVal !== 'ALL' && c.game !== gVal) return false;
+        if (qVal && !c.title.toLowerCase().includes(qVal)) return false;
+        const ts = Number(c.created);
+        if (minTs !== null && (!ts || ts < minTs)) return false;
+        if (maxTs !== null && (!ts || ts > maxTs)) return false;
+        if (targetYear !== null) {
+            const d = new Date(ts);
+            if (isNaN(d.getTime()) || d.getFullYear() !== targetYear) return false;
+        }
+        return true;
+    });
+
+    const sortVal = sortFilter.value;
+    state.filteredClips.sort((a, b) => {
+        if (sortVal === 'oldest') return (a.created || 0) - (b.created || 0);
+        if (sortVal === 'views') return (b.views || 0) - (a.views || 0);
+        if (sortVal === 'duration') return (b.duration || 0) - (a.duration || 0);
+        return (b.created || 0) - (a.created || 0);
+    });
+
+    if (resetPage) {
+        state.currentPage = 1;
+        state.lastAnchorId = null;
+    }
+    renderGrid();
+    updateCounts();
+}
+
+[gameFilter, dateFilter, dateFrom, dateTo, sortFilter].forEach(el => el.addEventListener('change', () => applyFilters(true)));
+titleSearch.addEventListener('input', () => applyFilters(true));
+
+selectAllCheckbox.addEventListener('change', () => {
+    const check = selectAllCheckbox.checked;
+    for (const c of state.filteredClips) {
+        if (c.videoUrl && !c.isProtected) {
+            if (check) state.selectedIds.add(c.contentId);
+            else state.selectedIds.delete(c.contentId);
+        }
+    }
+    syncVisibleCards();
+    updateCounts();
+});
+
+function syncVisibleCards() {
+    for (const card of clipsGrid.querySelectorAll('.clip-card')) {
+        const cb = card.querySelector('.clip-check');
+        if (!cb) continue;
+        const checked = state.selectedIds.has(cb.getAttribute('data-id'));
+        cb.checked = checked;
+        card.classList.toggle('selected', checked);
+    }
+}
+
+function updateCounts() {
+    const count = state.selectedIds.size;
+    selectedCountEl.textContent = count;
+    const unlockFiltered = state.filteredClips.filter(c => c.videoUrl && !c.isProtected);
+    selectAllCheckbox.checked = unlockFiltered.length > 0 && unlockFiltered.every(c => state.selectedIds.has(c.contentId));
+
+    let estBytes = 0;
+    for (const c of state.allClips) {
+        if (state.selectedIds.has(c.contentId)) {
+            const sec = Number(c.duration) || 25;
+            const h = Number(c.height) || 1080;
+            const bps = h >= 1440 ? (750 * 1024) : (h >= 1080 ? (520 * 1024) : (350 * 1024));
+            const minB = h >= 1080 ? (14 * 1024 * 1024) : (10 * 1024 * 1024);
+            estBytes += Math.max(sec * bps, minB);
+        }
+    }
+    estSizeBadge.textContent = `est. ~${formatBytes(estBytes)}`;
+    startDownloadBtn.disabled = count === 0 || state.isBusy;
+    startDownloadBtn.textContent = state.isBusy ? 'Downloading...' : `Download Selected (${count})`;
+}
+
+function applySelection(clip, nextChecked, isShift) {
+    if (isShift && state.lastAnchorId && state.lastAnchorId !== clip.contentId) {
+        const aIdx = state.filteredClips.findIndex(c => c.contentId === state.lastAnchorId);
+        const cIdx = state.filteredClips.findIndex(c => c.contentId === clip.contentId);
+        if (aIdx !== -1 && cIdx !== -1) {
+            const lo = Math.min(aIdx, cIdx), hi = Math.max(aIdx, cIdx);
+            for (let i = lo; i <= hi; i++) {
+                const item = state.filteredClips[i];
+                if (item.videoUrl && !item.isProtected) {
+                    if (nextChecked) state.selectedIds.add(item.contentId);
+                    else state.selectedIds.delete(item.contentId);
+                }
+            }
+            syncVisibleCards();
+            updateCounts();
+            return;
+        }
+    }
+    if (nextChecked) state.selectedIds.add(clip.contentId);
+    else state.selectedIds.delete(clip.contentId);
+    state.lastAnchorId = clip.contentId;
+    syncVisibleCards();
+    updateCounts();
+}
+
+function getPageNumbers(cur, total) {
+    if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+    const arr = [1];
+    if (cur > 3) arr.push('...');
+    for (let p = Math.max(2, cur - 1); p <= Math.min(total - 1, cur + 1); p++) arr.push(p);
+    if (cur < total - 2) arr.push('...');
+    arr.push(total);
+    return arr;
+}
+
+function renderPagination(total, totalPages, startIdx, endIdx) {
+    const bars = [
+        { wrap: paginationTop, info: pageInfoTop, btns: pageButtonsTop, bottom: false },
+        { wrap: paginationBottom, info: pageInfoBottom, btns: pageButtonsBottom, bottom: true }
+    ];
+    for (const bar of bars) {
+        if (total === 0 || (bar.bottom && totalPages <= 1)) {
+            bar.wrap.style.display = 'none';
+            continue;
+        }
+        bar.wrap.style.display = 'flex';
+        bar.info.textContent = `Showing ${startIdx + 1}–${endIdx} of ${total} · Hold Shift + Click for range selection`;
+        bar.btns.innerHTML = '';
+        if (totalPages <= 1) continue;
+
+        const addBtn = (lbl, pg, disabled = false, active = false) => {
+            const b = document.createElement('button');
+            b.type = 'button';
+            b.className = `page-btn${active ? ' active' : ''}`;
+            b.textContent = lbl;
+            b.disabled = disabled;
+            if (!disabled && !active) {
+                b.addEventListener('click', () => {
+                    state.currentPage = pg;
+                    renderGrid();
+                    if (bar.bottom) toolbar.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                });
+            }
+            bar.btns.appendChild(b);
+        };
+        addBtn('‹ Prev', state.currentPage - 1, state.currentPage <= 1);
+        for (const item of getPageNumbers(state.currentPage, totalPages)) {
+            if (item === '...') {
+                const s = document.createElement('span');
+                s.className = 'page-dots';
+                s.textContent = '…';
+                bar.btns.appendChild(s);
+            } else addBtn(String(item), item, false, item === state.currentPage);
+        }
+        addBtn('Next ›', state.currentPage + 1, state.currentPage >= totalPages);
+    }
+}
+
+function renderGrid() {
+    clipsGrid.innerHTML = '';
+    const total = state.filteredClips.length;
+    if (total === 0) {
+        renderPagination(0, 1, 0, 0);
+        clipsGrid.innerHTML = '<div style="grid-column:1/-1; padding:30px; text-align:center; color:#8a8f98;">No clips match your filters.</div>';
+        return;
+    }
+
+    const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+    state.currentPage = Math.min(Math.max(1, state.currentPage), totalPages);
+    const startIdx = (state.currentPage - 1) * PAGE_SIZE;
+    const endIdx = Math.min(startIdx + PAGE_SIZE, total);
+    renderPagination(total, totalPages, startIdx, endIdx);
+
+    const frag = document.createDocumentFragment();
+    for (const clip of state.filteredClips.slice(startIdx, endIdx)) {
+        const isLocked = Boolean(clip.isProtected || !clip.videoUrl);
+        const isSel = !isLocked && state.selectedIds.has(clip.contentId);
+        const card = document.createElement('div');
+        card.className = `clip-card${isSel ? ' selected' : ''}${isLocked ? ' locked' : ''}`;
+        card.innerHTML = `
+            <div>
+                <div class="thumb-wrap">
+                    ${clip.thumbnail ? `<img src="${clip.thumbnail}" loading="lazy" alt="" />` : ''}
+                    ${isLocked ? `<div class="lock-overlay"><span class="lock-pill">🔒 Session Key Required</span></div>` : ''}
+                    <label class="thumb-top-left">
+                        <input type="checkbox" class="clip-check" data-id="${clip.contentId}" ${isSel ? 'checked' : ''} ${isLocked ? 'disabled' : ''} />
+                        <span>#${String(clip.index).padStart(state.allClips.length >= 1000 ? 4 : 3, '0')}</span>
+                    </label>
+                    <span class="thumb-duration">${formatDuration(clip.duration)}</span>
+                </div>
+                <div class="clip-body">
+                    <div class="clip-title" title="${clip.title.replace(/"/g, '&quot;')}">${clip.title}</div>
+                    <div class="clip-meta">
+                        <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:130px;">${clip.game}</span>
+                        <span>${formatDate(clip.created)}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="clip-footer">
+                <span style="color:#6b7280;font-family:Consolas,monospace;">${clip.contentId}</span>
+                ${!isLocked
+                    ? `<span style="color:#4ade80;font-weight:600;">✓ Ready</span>`
+                    : `<span style="color:#f87171;font-weight:600;">🔒 Cookie Required</span>`
+                }
+            </div>
+        `;
+
+        const promptCookieFocus = () => {
+            const guide = document.getElementById('cookieGuide');
+            if (guide && !guide.classList.contains('open')) {
+                guide.classList.add('open');
+            }
+            if (authKeyInput) {
+                authKeyInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                authKeyInput.focus();
+            }
+        };
+
+        const labelWrap = card.querySelector('label.thumb-top-left');
+        labelWrap.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (isLocked) {
+                promptCookieFocus();
+                return;
+            }
+            applySelection(clip, !state.selectedIds.has(clip.contentId), e.shiftKey);
+        });
+        card.addEventListener('click', (e) => {
+            if (e.target.closest('label.thumb-top-left')) return;
+            if (isLocked) {
+                promptCookieFocus();
+                return;
+            }
+            applySelection(clip, !state.selectedIds.has(clip.contentId), e.shiftKey);
+        });
+
+        // Hover preview directly from Medal CDN
+        if (clip.videoUrl && !clip.isProtected) {
+            let vid = null, t = null;
+            card.addEventListener('mouseenter', () => {
+                t = setTimeout(() => {
+                    const tw = card.querySelector('.thumb-wrap');
+                    if (!tw) return;
+                    if (!vid) {
+                        vid = document.createElement('video');
+                        vid.muted = true;
+                        vid.loop = true;
+                        vid.playsInline = true;
+                        vid.preload = 'metadata';
+                        vid.src = clip.videoUrl;
+                        vid.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:2;pointer-events:none;';
+                        tw.appendChild(vid);
+                    }
+                    vid.style.display = 'block';
+                    vid.play().catch(() => {});
+                }, 250);
+            });
+            card.addEventListener('mouseleave', () => {
+                if (t) clearTimeout(t);
+                if (vid) { vid.pause(); vid.style.display = 'none'; }
+            });
+        }
+        frag.appendChild(card);
+    }
+    clipsGrid.appendChild(frag);
+}
+
+async function triggerDownload(clipsList, isRetry = false) {
+    if (state.isBusy || !clipsList.length) return;
+    state.isBusy = true;
+    fetchBtn.disabled = true;
+    retryFailedBtn.style.display = 'none';
+    updateCounts();
+
+    progressPanel.classList.add('visible');
+    progressBar.style.width = '0%';
+    progressText.textContent = `Starting 8-thread download (${clipsList.length} clips)...`;
+    progressStats.textContent = `0 / ${clipsList.length}`;
+    logBox.textContent = '';
+
+    await callDesktop('start_download', clipsList, {
+        outDir: outDirInput.value.trim(),
+        groupByGame: groupByGameCheckbox.checked,
+        zipMode: zipModeCheckbox.checked,
+        username: state.profile?.userName || 'Archive',
+        isRetry
+    });
+}
+
+startDownloadBtn.addEventListener('click', () => {
+    const selected = state.allClips.filter(c => state.selectedIds.has(c.contentId) && c.videoUrl && !c.isProtected);
+    triggerDownload(selected, false);
+});
+
+retryFailedBtn.addEventListener('click', () => {
+    if (state.failedClips.length > 0) triggerDownload([...state.failedClips], true);
+});
+</script>
+</body>
+</html>

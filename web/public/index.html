@@ -16,14 +16,14 @@
     <meta property="og:url" content="https://mdldownloader.onrender.com/">
     <meta property="og:title" content="MDLDownloader — Bulk Medal.tv Video &amp; Clip Downloader">
     <meta property="og:description" content="Download Medal.tv clips and full user profiles in bulk without watermark. Fast, high quality 1080p MP4 &amp; MyClips.zip archive.">
-    <meta property="og:image" content="https://mdldownloader.onrender.com/assets/web-preview.svg">
+    <meta property="og:image" content="https://mdldownloader.onrender.com/og-image.png">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://mdldownloader.onrender.com/">
     <meta property="twitter:title" content="MDLDownloader — Bulk Medal.tv Video &amp; Clip Downloader">
     <meta property="twitter:description" content="Bulk download Medal clips without watermarks in 1080p MP4. Free Chrome Extension &amp; Windows Desktop App included.">
-    <meta property="twitter:image" content="https://mdldownloader.onrender.com/assets/web-preview.svg">
+    <meta property="twitter:image" content="https://mdldownloader.onrender.com/og-image.png">
 
     <!-- Structured Data for Google (JSON-LD) -->
     <script type="application/ld+json">
@@ -45,7 +45,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Russo+One&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -390,6 +389,17 @@
             .ctrl-select, .ctrl-input, .btn-action {
                 width: 100%;
             }
+            #customDateWrap {
+                width: 100%;
+                flex-wrap: wrap;
+            }
+            #customDateWrap .ctrl-select {
+                flex: 1 1 120px;
+                width: auto;
+            }
+            .dl-box-footer {
+                flex-wrap: wrap;
+            }
             .clips-grid {
                 grid-template-columns: 1fr;
             }
@@ -565,7 +575,65 @@
             flex-direction: column;
             justify-content: space-between;
             cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
             transition: border-color 0.15s, transform 0.15s;
+        }
+        /* Pagination Bar */
+        .pagination-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 14px;
+            padding: 8px 12px;
+            background: #181a20;
+            border: 1px solid #262930;
+            border-radius: 4px;
+        }
+        .page-info {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+        .page-btns {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 4px;
+        }
+        .page-btn {
+            min-width: 30px;
+            height: 28px;
+            padding: 0 9px;
+            border-radius: 3px;
+            border: 1px solid #2e323c;
+            background: #121316;
+            color: #d1d5db;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s, border-color 0.15s;
+        }
+        .page-btn:hover:not(:disabled) {
+            background: #252830;
+            border-color: #f5b800;
+            color: #ffffff;
+        }
+        .page-btn.active {
+            background: #f5b800;
+            border-color: #f5b800;
+            color: #0c0d0f;
+            font-weight: 700;
+        }
+        .page-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .page-dots {
+            color: #6b7280;
+            font-size: 12px;
+            padding: 0 4px;
         }
         .clip-card:hover {
             border-color: #3f4452;
@@ -574,6 +642,38 @@
         .clip-card.selected {
             border-color: #f5b800 !important;
             box-shadow: 0 0 10px rgba(245, 184, 0, 0.15);
+        }
+        .clip-card.locked {
+            opacity: 0.72;
+            border-color: rgba(239, 68, 68, 0.38);
+            cursor: not-allowed;
+        }
+        .clip-card.locked:hover {
+            transform: none;
+            border-color: rgba(239, 68, 68, 0.7);
+        }
+        .clip-card.locked .thumb-wrap img {
+            filter: grayscale(75%) brightness(0.5);
+        }
+        .lock-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            background: rgba(12, 13, 15, 0.35);
+        }
+        .lock-pill {
+            background: rgba(18, 19, 22, 0.92);
+            border: 1px solid rgba(239, 68, 68, 0.65);
+            color: #fca5a5;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
         }
         .thumb-wrap {
             position: relative;
@@ -827,7 +927,7 @@
                             required
                             placeholder="https://medal.tv/u/username or username"
                         />
-                        <button id="scanBtn" type="submit" class="search-btn">Download</button>
+                        <button id="scanBtn" type="submit" class="search-btn">Fetch Clips</button>
                     </div>
 
                     <div class="auth-toggle-wrap">
@@ -835,31 +935,42 @@
                             <span id="authArrow">▸</span> Unlock Private or Guest-Protected Clips (How to Get Session Key)
                         </button>
                         <div id="authPanel" class="auth-box">
+                            <div style="background: rgba(245, 184, 0, 0.08); border: 1px solid rgba(245, 184, 0, 0.25); padding: 8px 10px; border-radius: 3px; margin-bottom: 10px; font-size: 12px; color: #e4e6eb;">
+                                <strong style="color: #f5b800;">Easiest &amp; Zero-Setup Option:</strong> Don't want to copy any keys? Use our <a href="#apps-and-extension" style="font-weight: 700;">Browser Extension</a> — it reads your active Medal session automatically with 1 click!
+                            </div>
+
                             <div class="auth-row">
                                 <input
                                     id="authKeyInput"
                                     type="password"
                                     class="auth-input"
-                                    placeholder="Paste your Medal session key here (e.g. mdl_...)"
+                                    placeholder="Paste medal-auth cookie value OR mdl_... session key here"
                                 />
                                 <button type="button" id="showKeyBtn" class="small-btn">Show</button>
                             </div>
+
                             <div style="line-height: 1.65; color: #d1d5db; margin-top: 6px;">
-                                <strong style="color: #f5b800;">Step-by-Step Guide to Get Your Session Key (Takes 15 Seconds):</strong>
+                                <strong style="color: #ffffff;">Method 1 — Read-Only Cookie Copy (Recommended: Zero Code Execution &amp; No Browser Warnings):</strong>
                                 <ol style="padding-left: 18px; margin-top: 4px; color: #9ca3af;">
-                                    <li>Go to <a href="https://medal.tv" target="_blank" rel="noopener">medal.tv</a> in your browser and <strong>log in to your account</strong> (you must be logged in for the key to exist).</li>
-                                    <li>Press <strong>F12</strong> on your keyboard (or right-click anywhere &rarr; <strong>Inspect</strong>) and click the <strong>Console</strong> tab at the top.</li>
-                                    <li><strong>Important (First-Time Browser Warning):</strong> When you try to paste in the Console, Chrome/Brave/Edge may block it and show a warning. Simply type <code>allow pasting</code> on your keyboard and press <strong>Enter</strong> to unlock pasting.</li>
-                                    <li>Copy the command below, paste it into the Console, and press <strong>Enter</strong>:</li>
+                                    <li>Go to <a href="https://medal.tv" target="_blank" rel="noopener">medal.tv</a> and <strong>log in to your account</strong>.</li>
+                                    <li>Press <strong>F12</strong> (or right-click anywhere &rarr; <strong>Inspect</strong>) and select the <strong>Application</strong> tab at the top (click <code>&gt;&gt;</code> if hidden).</li>
+                                    <li>On the left sidebar expand <strong>Cookies</strong> &rarr; <strong><code>https://medal.tv</code></strong> and click the row named <strong><code>medal-auth</code></strong>.</li>
+                                    <li>Copy the entire <strong>Cookie Value</strong> text shown below and paste it right into the box above! <em>(We automatically parse it and never save it).</em></li>
                                 </ol>
                             </div>
-                            <div class="code-line">
-                                <div id="consoleSnippet" class="code-box">JSON.parse(atob(decodeURIComponent(document.cookie.split('; ').find(r => r.startsWith('medal-auth=')).split('=')[1]))).key</div>
-                                <button type="button" id="copySnippetBtn" class="small-btn">Copy</button>
-                            </div>
-                            <div style="margin-top: 6px; color: #9ca3af;">
-                                5. Copy the resulting <code>mdl_...</code> text (without quotes), paste it into the box above, and click <strong>Download</strong>!
-                            </div>
+
+                            <details style="margin-top: 10px; border-top: 1px solid #22252a; padding-top: 8px; color: #9ca3af;">
+                                <summary style="cursor: pointer; color: #cbd5e1; font-weight: 600;">Method 2 — Developer Console Shortcut (Advanced)</summary>
+                                <ol style="padding-left: 18px; margin-top: 6px;">
+                                    <li>On <a href="https://medal.tv" target="_blank" rel="noopener">medal.tv</a> press <strong>F12</strong> &rarr; <strong>Console</strong> tab.</li>
+                                    <li>If Chrome warns about pasting, type <code>allow pasting</code> and press <strong>Enter</strong>.</li>
+                                    <li>Run this snippet and paste the output <code>mdl_...</code> key above:</li>
+                                </ol>
+                                <div class="code-line">
+                                    <div id="consoleSnippet" class="code-box">JSON.parse(atob(decodeURIComponent(document.cookie.split('; ').find(r => r.startsWith('medal-auth=')).split('=')[1]))).key</div>
+                                    <button type="button" id="copySnippetBtn" class="small-btn">Copy</button>
+                                </div>
+                            </details>
                         </div>
                     </div>
                 </form>
@@ -900,6 +1011,7 @@
                                 <input type="checkbox" id="selectAllCheckbox" checked />
                                 <span>Select All (<span id="selectedCount">0</span>)</span>
                             </label>
+                            <span id="estSizeBadge" title="Approximate download size estimated from clip duration and resolution. Actual MP4 sizes vary by bitrate." style="font-size: 11px; color: #f5b800; background: rgba(245, 184, 0, 0.1); padding: 4px 8px; border-radius: 3px; font-weight: 600; white-space: nowrap; cursor: help;">est. ~0 MB</span>
                             <label style="font-size: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; color: #cbd5e1; user-select: none; background: #121316; padding: 6px 10px; border-radius: 3px; border: 1px solid #32363f;">
                                 <input type="checkbox" id="groupByGameCheckbox" checked />
                                 <span>Organize into Game Subfolders</span>
@@ -907,13 +1019,37 @@
                             <select id="gameFilter" class="ctrl-select">
                                 <option value="ALL">All Games</option>
                             </select>
+                            <select id="dateFilter" class="ctrl-select">
+                                <option value="ALL">All Dates</option>
+                                <option value="30D">Last 30 Days</option>
+                                <option value="90D">Last 3 Months</option>
+                                <option value="180D">Last 6 Months</option>
+                                <option value="CUSTOM">Custom Range...</option>
+                            </select>
+                            <div id="customDateWrap" style="display: none; align-items: center; gap: 5px;">
+                                <input id="dateFrom" type="date" class="ctrl-select" title="From date" />
+                                <span style="color:#6b7280; font-size:12px;">–</span>
+                                <input id="dateTo" type="date" class="ctrl-select" title="To date" />
+                            </div>
+                            <select id="sortFilter" class="ctrl-select">
+                                <option value="newest">Newest First</option>
+                                <option value="oldest">Oldest First</option>
+                                <option value="views">Most Views</option>
+                                <option value="duration">Longest First</option>
+                            </select>
                             <input id="titleSearch" type="text" class="ctrl-input" placeholder="Search clip title..." />
                         </div>
                         <div class="toolbar-right">
                             <button id="downloadZipBtn" type="button" class="btn-action btn-gold">Download MyClips.zip</button>
                             <button id="downloadFolderBtn" type="button" class="btn-action btn-dark">Save to Local Folder</button>
                             <button id="exportLinksBtn" type="button" class="btn-action btn-dark">Export Links (.txt)</button>
+                            <button id="retryFailedBtn" type="button" class="btn-action btn-gold" style="display: none;">Retry Failed (<span id="failedCount">0</span>)</button>
                         </div>
+                    </div>
+
+                    <!-- Large Library Recommendation -->
+                    <div id="largeLibraryNotice" style="display: none; background: #181a20; border: 1px solid #2b2f38; border-left: 4px solid #f5b800; padding: 10px 14px; border-radius: 4px; margin-bottom: 14px; font-size: 12px; color: #d1d5db;">
+                        <strong>💡 Large library detected (<span id="largeNoticeCount">0</span> clips):</strong> For ultra-fast multi-threaded downloads (500+ clips), try our <a href="#apps-and-extension" style="color: #f5b800; font-weight: bold;">Desktop App (.EXE)</a> (8 parallel threads) or 1-click <a href="#apps-and-extension" style="color: #f5b800; font-weight: bold;">Chrome Extension</a>.
                     </div>
 
                     <!-- Progress Bar -->
@@ -930,22 +1066,46 @@
                         </div>
                     </div>
 
+                    <!-- Pagination Top -->
+                    <div id="paginationTop" class="pagination-bar" style="display: none;">
+                        <span id="pageInfoTop" class="page-info"></span>
+                        <div id="pageButtonsTop" class="page-btns"></div>
+                    </div>
+
                     <!-- Clips Grid -->
                     <div id="clipsGrid" class="clips-grid"></div>
+
+                    <!-- Pagination Bottom -->
+                    <div id="paginationBottom" class="pagination-bar" style="display: none; margin-top: 16px; margin-bottom: 0;">
+                        <span id="pageInfoBottom" class="page-info"></span>
+                        <div id="pageButtonsBottom" class="page-btns"></div>
+                    </div>
                 </div>
 
                 <!-- Companion Downloads: Desktop App (.exe) & Chrome Extension (.zip) -->
                 <div id="apps-and-extension" class="downloads-grid">
                     <div class="dl-box">
                         <div>
-                            <div class="dl-box-tag">Windows Desktop App (.EXE)</div>
+                            <div class="dl-box-tag">Windows Desktop App (.EXE) • Open Source (MIT)</div>
                             <h3>MDLDownloader for Windows</h3>
                             <p>
-                                Standalone 8-thread parallel downloader for massive clip libraries (300+ videos). Downloads and packages all your clips directly into a single <code>MyClips_username.zip</code> in your Downloads folder without browser memory limits.
+                                Native Windows Edge WebView2 desktop app (&lt;1 MB) backed by an <strong>8-thread parallel downloader</strong> (ideal for 500–2,000+ clip libraries). Includes video previews, Game &amp; Date filters, Resume, Retry Failed, and single <code>MyClips_username.zip</code> output.
                             </p>
+                            <div style="background: #121316; border: 1px solid #262930; border-radius: 3px; padding: 8px 10px; margin-bottom: 12px; font-size: 11px;">
+                                <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 5px;">
+                                    <span style="color: #4ade80; font-weight: 600;">✓ 100% Open Source</span>
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <a href="https://www.virustotal.com/gui/file/8c9649e70ac800ee2dd258c3dd8c14b86100d74374d2f1e4c199e85a85c3c941" target="_blank" rel="noopener" style="color: #60a5fa; font-weight: 600;">VirusTotal Scan ↗</a>
+                                        <a href="https://github.com/yigittsahbaz/MDLDownloader/blob/main/desktop-app/Program.cs" target="_blank" rel="noopener" style="color: #f5b800; font-weight: 600;">Inspect C# Source ↗</a>
+                                    </div>
+                                </div>
+                                <div style="color: #9ca3af; font-family: Consolas, monospace; font-size: 10px; word-break: break-all;">
+                                    <strong style="color:#cbd5e1;">SHA-256:</strong> 8c9649e70ac800ee2dd258c3dd8c14b86100d74374d2f1e4c199e85a85c3c941
+                                </div>
+                            </div>
                         </div>
                         <div class="dl-box-footer">
-                            <span style="font-size: 11px; color: #8a8f98;">v1.3 • Portable EXE (12 MB)</span>
+                            <span style="font-size: 11px; color: #8a8f98;">Portable Windows App (1.0 MB)</span>
                             <a href="/downloads/MDLDownloader.exe" download="MDLDownloader.exe" class="dl-btn-main">Download .EXE</a>
                         </div>
                     </div>
@@ -955,11 +1115,18 @@
                             <div class="dl-box-tag">Browser Extension (Chrome / Brave / Edge)</div>
                             <h3>MDLDownloader Browser Extension</h3>
                             <p>
-                                Automatically detects your logged-in Medal.tv session (no Session Key copy-pasting needed) or lets you search any username. Pick specific games (e.g. FIFA + CS2) and download a single <code>MyClips.zip</code> straight from your toolbar.
+                                Detects your logged-in Medal.tv session (<code>@username</code> + 1-click <strong>My Clips</strong>) or lets you search any username. Downloads run inside a dedicated full-page tab as a single <code>MyClips.zip</code> so switching tabs never cancels them.
                             </p>
+                            <div style="background: #121316; border: 1px solid #262930; border-radius: 3px; padding: 8px 10px; margin-bottom: 12px; font-size: 11px; color: #cbd5e1; line-height: 1.55;">
+                                <div style="color: #f5b800; font-weight: 700; margin-bottom: 3px;">Quick Install (4 Steps):</div>
+                                <div>1. Click <strong>Download Extension</strong> &amp; unzip the folder.</div>
+                                <div>2. Open <code>chrome://extensions</code> in Chrome / Brave / Edge.</div>
+                                <div>3. Turn on <strong>Developer mode</strong> (top-right toggle).</div>
+                                <div>4. Click <strong>Load unpacked</strong> &amp; select the unzipped folder.</div>
+                            </div>
                         </div>
                         <div class="dl-box-footer">
-                            <span style="font-size: 11px; color: #8a8f98;">v1.3 • Manifest V3 (.ZIP)</span>
+                            <span style="font-size: 11px; color: #8a8f98;">Chrome / Brave / Edge (.ZIP)</span>
                             <a href="/downloads/MDLDownloader-Chrome-Extension.zip" download="MDLDownloader-Chrome-Extension.zip" class="dl-btn-main">Download Extension</a>
                         </div>
                     </div>
@@ -970,27 +1137,27 @@
                     <h2>Download Medal.tv Clips Without Watermark for FREE</h2>
                     <ol>
                         <li>Enter your Medal.tv username or profile link (e.g. <code>https://medal.tv/u/username</code>) in the input box above.</li>
-                        <li>Click the <strong>Download</strong> button to load all public clips from the profile.</li>
-                        <li>Filter by game category or select specific clips you want to keep.</li>
-                        <li>Click <strong>Download MyClips.zip</strong> to save a single ZIP file to your devices, or click <strong>Download MP4</strong> on individual clips.</li>
+                        <li>Click the <strong>Fetch Clips</strong> button to load all clips from the profile.</li>
+                        <li>Filter by game category, date range, or select clips (hold <strong>Shift + Click</strong> to select a range).</li>
+                        <li>Click <strong>Download MyClips.zip</strong> to save a single ZIP file straight to your Downloads folder, or click <strong>Download MP4</strong> on individual clips.</li>
                     </ol>
                 </div>
 
-                <!-- Privacy Policy Section (Requested Exact Structure) -->
+                <!-- Privacy Policy Section -->
                 <div id="privacy-policy" class="info-block">
-                    <h2>Privacy Policy</h2>
+                    <h2>Privacy Policy &amp; Security</h2>
 
-                    <h3>Personal information</h3>
-                    <p>This website does not collect or transmit any user's personally identifiable information. No personal information is used, stored, secured or disclosed by services this website works with.</p>
+                    <h3>Personal Information &amp; Session Tokens</h3>
+                    <p>This website does not store, collect, log, or sell any personally identifiable information. If you optionally provide a Medal session key to download your own private or guest-protected clips, it is transmitted strictly over encrypted HTTPS directly to the Medal.tv API for that request only. Session keys are never saved to a database, never written to disk, and never shared with any third party.</p>
 
-                    <h3>Technical information</h3>
-                    <p>No technical information is sent or stored for now (such as IP addresses included in the HTTP calls the website makes). But we reserve the right to collect such informations in later versions to provide better service to you. We'll update this privacy policy then.</p>
+                    <h3>Technical Information</h3>
+                    <p>No user IP addresses or activity histories are stored on our servers. Video streams are proxied statelessly in real-time between Medal.tv CDNs and your browser without being saved on our servers.</p>
 
-                    <h3>Third parties</h3>
-                    <p>If the website makes use of third party services, their usage of information is excluded from this privacy policy. You will be clearly made aware of the third parties involved in the website and we will ensure the very minimal set of data is set to those third parties.</p>
+                    <h3>Third-Party Services</h3>
+                    <p>To keep this service free and fast, we use Google Fonts and privacy-preserving A-Ads display banners. Single ZIP archives are streamed statelessly in real time without saving user videos on disk. These services do not use invasive tracking cookies, popunder scripts, push notification prompts, or hidden background redirects.</p>
 
-                    <h3>Report violations or get more information</h3>
-                    <p>If you would like to report any violations of this policy or get more information on this website, please contact us at <a href="mailto:support@mdldownloader.com">support@mdldownloader.com</a>.</p>
+                    <h3>Open Source Verification &amp; Inquiries</h3>
+                    <p>MDLDownloader is 100% open source. You can inspect the entire codebase, self-host your own instance, or report questions via our GitHub repository at <a href="https://github.com/yigittsahbaz/MDLDownloader" target="_blank" rel="noopener">github.com/yigittsahbaz/MDLDownloader</a>.</p>
                 </div>
             </main>
 

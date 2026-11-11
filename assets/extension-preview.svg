@@ -17,7 +17,7 @@
   <rect width="1200" height="540" rx="14" class="bg"/>
 
   <!-- LEFT: Chrome Extension Preview -->
-  <text x="50" y="38" class="text-gold font-black" font-size="14" letter-spacing="1.5">1. CHROME EXTENSION (v1.3 — IN-POPUP GAME FILTER &amp; ZIP PACKAGER)</text>
+  <text x="50" y="38" class="text-gold font-black" font-size="14" letter-spacing="1.5">1. CHROME EXTENSION (GAME FILTER &amp; SINGLE ZIP PACKAGER)</text>
   <rect x="50" y="52" width="460" height="455" rx="10" class="panel"/>
 
   <!-- Ext Topbar -->
@@ -25,7 +25,6 @@
   <rect x="68" y="65" width="48" height="24" rx="4" fill="#f5b800"/>
   <text x="75" y="82" fill="#111215" font-family="Segoe UI, sans-serif" font-weight="900" font-size="13">MDL</text>
   <text x="124" y="82" class="text-white font-black" font-size="14" letter-spacing="1">DOWNLOADER</text>
-  <text x="455" y="81" class="text-muted" font-size="11">v1.3</text>
 
   <!-- Ext Session Box -->
   <rect x="68" y="114" width="424" height="54" rx="6" class="card"/>
