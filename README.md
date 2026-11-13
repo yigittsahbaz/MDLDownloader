@@ -12,7 +12,7 @@
 
 **MDLDownloader** is a 100% open-source 3-in-1 toolkit to back up and bulk-download your gaming clips from **Medal.tv** in original full-HD quality without watermarks, automatically organized into game subfolders inside a single `MyClips_<username>.zip` archive.
 
-[🌐 Web App](#1-web-application-zero-dependency-nodejs) • [🧩 Browser Extension](#2-chrome-extension-1-click-session--full-tab-downloader) • [💻 Windows Desktop `.EXE`](#3-windows-desktop-app-native-c-webview2-exe) • [🛡️ Security & VirusTotal](#-security-transparency--sha-256--virustotal-verification) • [☁️ 1-Click Cloud Deploy](#️-deploy-your-own-instance-free)
+[🌐 Web App](#1-web-application-zero-dependency-nodejs) • [🧩 Browser Extension](#2-chrome-extension-1-click-session--full-tab-downloader) • [💻 Windows Desktop `.EXE`](#3-windows-desktop-app-native-c-webview2-exe) • [🛡️ Security & VirusTotal](#-security-transparency--sha-256--virustotal-verification)
 
 </div>
 
@@ -116,16 +116,6 @@ Built for maximum speed on large clip libraries (`500–2,000+` clips):
 2. Enter your Medal Profile URL or Username and click **Fetch Clips**.
 3. *(Optional)* Expand the Session Key box and paste your `medal-auth` cookie or `mdl_...` key to unlock guest-protected/private clips.
 4. Filter by **Game**, **Date Range**, or search by title, choose your output directory (defaults to `Downloads`), and click **Download MyClips.zip** or **Save to Local Folder**.
-
----
-
-## ☁️ Deploy Your Own Instance (Free)
-
-This repository includes a [`render.yaml`](./render.yaml) blueprint and [`package.json`](./package.json) for 1-click deployment on **Render**, **Railway**, or **Fly.io**:
-
-1. Fork or push this repository to your GitHub account.
-2. Go to [Render.com](https://render.com) → **New Web Service** → Connect your repository.
-3. Render automatically runs `npm start` (`node web/server.js`) and exposes `/health` (`200 OK`) for uptime monitoring (e.g., UptimeRobot).
 
 ---
 
