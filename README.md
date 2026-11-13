@@ -2,16 +2,17 @@
 
 # 🎮 `[MDL]` DOWNLOADER
 
-### Bulk Medal.tv Video Downloader — No Watermark • Original 1080p MP4 • Game Subfolder `.ZIP`
+### Bulk Medal.tv Video & Profile Downloader — No Watermark • Original 1080p MP4 • Single `MyClips.zip`
 
-[![Node.js](https://img.shields.io/badge/Node.js-Zero_Dependencies-2ea043?style=for-the-badge&logo=nodedotjs&logoColor=white)](#)
-[![Chrome Extension](https://img.shields.io/badge/Chrome_Extension-Manifest_V3-f5b800?style=for-the-badge&logo=googlechrome&logoColor=black)](#2-chrome-extension-in-popup-game-selector)
-[![Windows EXE](https://img.shields.io/badge/Windows_Desktop-.EXE_Included-0078D6?style=for-the-badge&logo=windows&logoColor=white)](#3-windows-desktop-app-standalone-exe)
+[![Node.js](https://img.shields.io/badge/Node.js-Zero_Dependencies-2ea043?style=for-the-badge&logo=nodedotjs&logoColor=white)](#1-web-application-zero-dependency-nodejs)
+[![Chrome Extension](https://img.shields.io/badge/Chrome_Extension-Manifest_V3-f5b800?style=for-the-badge&logo=googlechrome&logoColor=black)](#2-chrome-extension-1-click-session--full-tab-downloader)
+[![Windows EXE](https://img.shields.io/badge/Windows_Desktop-Native_C%23_WebView2-0078D6?style=for-the-badge&logo=windows&logoColor=white)](#3-windows-desktop-app-native-c-webview2-exe)
+[![VirusTotal](https://img.shields.io/badge/VirusTotal-SHA256_Verified-4ade80?style=for-the-badge&logo=virustotal&logoColor=black)](#-security-transparency--sha-256--virustotal-verification)
 [![License: MIT](https://img.shields.io/badge/License-MIT-9aa0ac?style=for-the-badge)](#license)
 
-**MDLDownloader** is a complete 3-in-1 open-source toolkit to back up and bulk-download your gaming clips from **Medal.tv** in original full-HD quality without watermarks, automatically sorted into game folders inside a single `MyClips_<username>.zip` archive.
+**MDLDownloader** is a 100% open-source 3-in-1 toolkit to back up and bulk-download your gaming clips from **Medal.tv** in original full-HD quality without watermarks, automatically organized into game subfolders inside a single `MyClips_<username>.zip` archive.
 
-[🌐 Web App](#1-web-application-zero-dependency-nodejs) • [🧩 Chrome Extension](#2-chrome-extension-in-popup-game-selector) • [💻 Windows Desktop `.EXE`](#3-windows-desktop-app-standalone-exe) • [🚀 1-Click Cloud Deploy](#deploy-your-own-instance-free)
+[🌐 Web App](#1-web-application-zero-dependency-nodejs) • [🧩 Browser Extension](#2-chrome-extension-1-click-session--full-tab-downloader) • [💻 Windows Desktop `.EXE`](#3-windows-desktop-app-native-c-webview2-exe) • [🛡️ Security & VirusTotal](#-security-transparency--sha-256--virustotal-verification) • [☁️ 1-Click Cloud Deploy](#️-deploy-your-own-instance-free)
 
 </div>
 
@@ -23,7 +24,7 @@
 
 ---
 
-## 🧩 Chrome Extension & Desktop `.EXE` Preview
+## 🧩 Browser Extension & Native C# Desktop `.EXE` Preview
 
 ![MDLDownloader Extension and Desktop Preview](./assets/extension-preview.svg)
 
@@ -31,25 +32,43 @@
 
 ## ✨ Why MDLDownloader?
 
-Gamers often accumulate **hundreds of clips** across multiple games (Counter-Strike 2, Valorant, EA SPORTS FC / FIFA, GTA V, League of Legends, etc.). Downloading them one by one through a browser takes hours, and guest-protected clips often fail to download without a valid session.
+Gamers accumulate **hundreds or thousands of clips** across multiple games (*Counter-Strike 2, Valorant, EA SPORTS FC, GTA V, Call of Duty, League of Legends*, etc.). Downloading them one by one in a browser takes hours, and guest-protected or private clips require an active session.
 
-**MDLDownloader** solves this with **three tools in one repository**:
+**MDLDownloader** solves this with **three complementary tools in one repository**:
 
-| Platform | Best For | Key Features |
+| Platform | Best For | Key Highlights |
 | :--- | :--- | :--- |
-| 🌐 **Web App** (`web/`) | Instant browser access on any OS | Enter username/URL, hover-preview clips, filter by game/date, Shift+Click range select, 36-clip pagination, and stream a single `MyClips_<user>.zip` (ZIP64) or save to folder. |
-| 🧩 **Chrome Extension** (`chrome-extension/`) | 1-click session detection + Full-Tab downloader | Displays `Logged in as @username` + **My Clips** button, filters by game, and packages a single `MyClips.zip` in a full-page tab (`downloader.html`) so switching tabs never cancels downloads. |
-| 💻 **Desktop App** (`desktop-app/`) | Massive libraries (500–2,000+ clips) | Native C# (.NET) **Edge WebView2** desktop app (<1 MB) backed by an **8-thread download engine** with clip thumbnails, hover previews, Game & Date filters, Resume, Retry Failed, and ZIP64 output. |
+| 🌐 **Web App** ([`web/`](./web)) | Instant browser access on any OS | Enter username/URL, hover-preview clips directly from Medal CDN, filter by game/date, Shift+Click range select, 36-clip pagination, and stream a single `MyClips_<user>.zip` (ZIP64) or save directly to a local folder. |
+| 🧩 **Browser Extension** ([`chrome-extension/`](./chrome-extension)) | 1-click session detection + Full-Tab ZIP | Automatically detects your logged-in `@username` on `medal.tv` with a 1-click **My Clips** button, filters by game, and packages a single `MyClips.zip` inside a dedicated full-page tab (`downloader.html`) so switching tabs never interrupts downloads. |
+| 💻 **Windows Desktop App** ([`desktop-app/`](./desktop-app)) | Massive libraries (500–2,000+ clips) | Native C# (`.NET Framework 4.8`) **Edge WebView2** desktop app (`1.0 MB`) powered by an **8-thread parallel download engine**, visual clip grid, hover video previews, Game & Date filters, Resume, Retry Failed, and single `MyClips_<user>.zip` output. |
 
 ---
 
-## 🛠️ How It Works & Features
+## 🛡️ Security, Transparency & SHA-256 / VirusTotal Verification
 
-- **Original Direct MP4 Streams:** Fetches the highest available resolution (`rawFileUrl` -> `contentUrl` -> `1080p` -> `720p`) directly from Medal's CDN without re-encoding or adding watermarks.
-- **Game Subfolder Organization:** Automatically groups clips by category (e.g., `MyClips/Counter-Strike 2/0001_Ace_Clutch_12345.mp4`, or flattened if unchecked).
-- **Zero-Code Private Clip Access:** Paste your `medal-auth` cookie directly from DevTools (`Application -> Cookies`), or use the Browser Extension — no console pasting required.
-- **Single-File ZIP64 Streaming:** Web app uses zero-dependency server-side ZIP64 streaming (`zip-stream.js`), and the Extension uses `client-zip.js` — preventing multi-prompt spam or split archives.
-- **100% Open Source & Privacy-First:** Session tokens are never stored, logged, or saved to disk.
+We built **MDLDownloader** to be completely transparent, auditable, and safe for every gamer:
+
+1. **100% Open Source & Readable Code:**
+   - **Desktop App Source:** Written in a single, plain-text C# file ([`desktop-app/Program.cs`](./desktop-app/Program.cs)) paired with an HTML/CSS/JS interface ([`desktop-app/ui.html`](./desktop-app/ui.html)) and official Microsoft-signed WebView2 libraries ([`desktop-app/lib/`](./desktop-app/lib)).
+   - **Web & Extension Source:** Zero obfuscation, zero external npm dependencies ([`package.json`](./package.json)), and strict domain whitelisting (`*.medal.tv` / `cdn.medal.tv`) on video streams.
+2. **Zero Credential or Session Storage:**
+   - If you optionally use a `medal-auth` session cookie/key to unlock your own private or guest-protected clips, it is sent strictly over HTTPS to `medal.tv` for that request only. Keys are **never** logged, saved to a database, or shared with third parties.
+3. **Public VirusTotal Scan & SHA-256 Checksum (`MDLDownloader.exe`):**
+   - **Executable Path:** [`web/public/downloads/MDLDownloader.exe`](./web/public/downloads/MDLDownloader.exe) (`1,008,640` bytes / `1.0 MB`)
+   - **SHA-256 Hash:** `8c9649e70ac800ee2dd258c3dd8c14b86100d74374d2f1e4c199e85a85c3c941`
+   - **VirusTotal Report:** [**View Official VirusTotal Analysis ↗**](https://www.virustotal.com/gui/file/8c9649e70ac800ee2dd258c3dd8c14b86100d74374d2f1e4c199e85a85c3c941)
+
+You can verify the downloaded `.EXE` hash on Windows PowerShell in one second:
+
+```powershell
+Get-FileHash .\MDLDownloader.exe -Algorithm SHA256
+```
+
+> **Prefer to compile the `.EXE` yourself from source?**
+> You don't even need Visual Studio or Python — Windows includes the official Microsoft C# compiler (`csc.exe`) out of the box:
+> ```powershell
+> powershell -ExecutionPolicy Bypass -File .\desktop-app\build.ps1
+> ```
 
 ---
 
@@ -57,7 +76,7 @@ Gamers often accumulate **hundreds of clips** across multiple games (Counter-Str
 
 ### 1. Web Application (Zero-Dependency Node.js)
 
-The web application requires **only Node.js (18+)** — no external `npm install` packages are needed!
+Requires **only Node.js (18+)** — no external `npm install` packages needed:
 
 ```bash
 # Clone the repository
@@ -71,47 +90,42 @@ npm start
 Open **`http://localhost:3000`** in your browser.
 
 - **Public Clips:** Enter any Medal username or `https://medal.tv/u/<username>` and click **Fetch Clips**.
-- **Protected / Private Clips:** Expand **Unlock Private or Guest-Protected Clips**, copy your `medal-auth` cookie value from `F12 -> Application -> Cookies -> medal.tv`, or use the Browser Extension.
+- **Protected / Private Clips:** Click any locked clip card (`🔒 Session Key Required`) or expand **Unlock Private or Guest-Protected Clips** to copy your `medal-auth` cookie from `F12 -> Application -> Cookies -> medal.tv` (or use the Browser Extension for automatic 1-click detection).
 
 ---
 
-### 2. Chrome Extension (Full-Page Downloader Tab)
+### 2. Chrome Extension (1-Click Session & Full-Tab Downloader)
 
-No web server needed — works directly inside Chrome, Brave, Edge, or Opera:
+Works directly inside **Chrome, Brave, Edge, or Opera** without running a local server:
 
-1. Download [`web/public/downloads/MDLDownloader-Chrome-Extension.zip`](./web/public/downloads/MDLDownloader-Chrome-Extension.zip) (or use the [`chrome-extension/`](./chrome-extension) folder directly).
-2. Open Chrome/Brave and navigate to `chrome://extensions/`.
-3. Enable **Developer mode** in the top-right corner.
-4. Click **Load unpacked** and select the extracted extension folder.
-5. Click the **MDLDownloader** icon in your toolbar:
-   - If logged into `medal.tv`, click **My Clips** next to `Logged in as @username`, or scan any public username/URL.
-   - Check the games you want and click **Open Full Downloader ↗** to download a single `MyClips_<username>.zip` in a dedicated tab.
+1. Download [`web/public/downloads/MDLDownloader-Chrome-Extension.zip`](./web/public/downloads/MDLDownloader-Chrome-Extension.zip) and unzip it (or select the [`chrome-extension/`](./chrome-extension) folder directly).
+2. Open `chrome://extensions/` in your browser.
+3. Turn on **Developer mode** (top-right toggle).
+4. Click **Load unpacked** and select the unzipped extension folder.
+5. Click the **MDLDownloader** icon in your browser toolbar:
+   - If you are logged into `medal.tv`, click **My Clips** next to `Logged in as @username`, or enter any username/URL and click **Fetch Clips**.
+   - Select the games you want and click **Open Full Downloader ↗** to download a single `MyClips_<username>.zip` or save directly to a local folder with resume support.
 
 ---
 
-### 3. Windows Desktop App (Modern WebView2 `.EXE`)
+### 3. Windows Desktop App (Native C# WebView2 `.EXE`)
 
-For maximum speed on large clip libraries:
+Built for maximum speed on large clip libraries (`500–2,000+` clips):
 
-1. Download and run **[`web/public/downloads/MDLDownloader.exe`](./web/public/downloads/MDLDownloader.exe)** (also available on the Web App homepage with SHA-256 verification).
+1. Download and run **[`web/public/downloads/MDLDownloader.exe`](./web/public/downloads/MDLDownloader.exe)**.
 2. Enter your Medal Profile URL or Username and click **Fetch Clips**.
-3. (Optional) Paste your `medal-auth` cookie value or `mdl_...` key for private/guest-protected clips.
-4. Filter by Game or Date, verify your target folder (defaults to `Downloads`), and click **Download Selected**.
-
-> **Want to build the `.EXE` from source yourself?** *(Requires only built-in Windows .NET Framework 4.x — no Python or Visual Studio needed)*
-> ```powershell
-> powershell -ExecutionPolicy Bypass -File .\desktop-app\build.ps1
-> ```
+3. *(Optional)* Expand the Session Key box and paste your `medal-auth` cookie or `mdl_...` key to unlock guest-protected/private clips.
+4. Filter by **Game**, **Date Range**, or search by title, choose your output directory (defaults to `Downloads`), and click **Download MyClips.zip** or **Save to Local Folder**.
 
 ---
 
 ## ☁️ Deploy Your Own Instance (Free)
 
-This repository includes a [`render.yaml`](./render.yaml) blueprint and [`package.json`](./package.json) for instant cloud deployment on **Render**, **Railway**, or **Fly.io**:
+This repository includes a [`render.yaml`](./render.yaml) blueprint and [`package.json`](./package.json) for 1-click deployment on **Render**, **Railway**, or **Fly.io**:
 
-1. Push this repository to your GitHub account.
-2. Go to [Render.com](https://render.com) -> **New Web Service** -> Connect your GitHub repository.
-3. Render will automatically detect `npm start` (`node web/server.js`) and deploy your site live with free HTTPS.
+1. Fork or push this repository to your GitHub account.
+2. Go to [Render.com](https://render.com) → **New Web Service** → Connect your repository.
+3. Render automatically runs `npm start` (`node web/server.js`) and exposes `/health` (`200 OK`) for uptime monitoring (e.g., UptimeRobot).
 
 ---
 
@@ -120,45 +134,45 @@ This repository includes a [`render.yaml`](./render.yaml) blueprint and [`packag
 ```text
 MDLDownloader/
 ├── assets/
-│   ├── web-preview.svg               # Web UI preview graphic
-│   └── extension-preview.svg         # Chrome Extension & Desktop .EXE preview
-├── chrome-extension/                 # Standalone Manifest V3 Chrome Extension
+│   ├── web-preview.svg               # Web application UI preview graphic
+│   └── extension-preview.svg         # Browser Extension & Native C# Desktop UI preview
+├── chrome-extension/                 # Standalone Manifest V3 Browser Extension
 │   ├── icons/                        # Gold MDL toolbar & extension icons (16/48/128px)
-│   ├── manifest.json                 # Extension permissions & config
-│   ├── shared.js                     # Shared Medal.tv API helpers
-│   ├── popup.html & popup.js         # Logged-in @user + "My Clips" & game picker popup
-│   ├── downloader.html & .js         # Dedicated full-page downloader tab
-│   └── client-zip.js                 # Local ZIP64 generator for single-file archives
-├── desktop-app/                      # Native C# WebView2 + 8-Thread Desktop App
-│   ├── app.ico                       # Multi-resolution Windows app icon
-│   ├── app.manifest                  # DPI & standard user execution manifest
-│   ├── build.ps1                     # Zero-dependency csc.exe build script
+│   ├── manifest.json                 # Extension permissions & Manifest V3 config
+│   ├── shared.js                     # Shared Medal.tv API & profile scanner helpers
+│   ├── popup.html & popup.js         # Logged-in @username + "My Clips" & game picker popup
+│   ├── downloader.html & .js         # Dedicated full-page downloader tab (ZIP64 + Folder Resume)
+│   └── client-zip.js                 # Zero-dependency streaming ZIP64 generator
+├── desktop-app/                      # Native C# (.NET 4.8) Edge WebView2 + 8-Thread Desktop App
+│   ├── app.ico                       # Multi-resolution Windows application icon
+│   ├── app.manifest                  # High-DPI & standard user execution manifest
+│   ├── build.ps1                     # Zero-dependency csc.exe build & sync script
 │   ├── lib/                          # Official Microsoft-signed WebView2 assemblies
-│   ├── Program.cs                    # Native C# WebView2 bridge & 8-thread ZIP64 engine
-│   └── ui.html                       # Modern HTML5/CSS3 dark & gold desktop UI
-├── web/                              # TikWM-style Web Application
-│   ├── server.js                     # Zero-dependency Node.js server, SSE & whitelist proxy
-│   ├── zip-stream.js                 # Zero-dependency server-side ZIP64 stream writer
+│   ├── Program.cs                    # Native C# WebView2 RPC bridge & 8-thread ZIP64 engine
+│   └── ui.html                       # Modern HTML5/CSS3 dark & gold desktop interface
+├── web/                              # Zero-Dependency Node.js Web Application
+│   ├── server.js                     # HTTP server, SSE progress & domain-whitelisted proxy
+│   ├── zip-stream.js                 # Server-side streaming ZIP64 archive writer
 │   └── public/
-│       ├── index.html                # Main UI, Cookie Guide, Tool Cards & Privacy Policy
-│       ├── app.js                    # Client-side filters, pagination, hover & SSE progress
-│       ├── og-image.png              # Social preview banner (1200x630 PNG)
-│       ├── favicon.svg               # Gold MDL favicon
-│       └── downloads/                # Direct downloadable .EXE & Extension .ZIP packages
-├── package.json                      # Node.js entry point for cloud hosting
-├── render.yaml                       # 1-click Render.com free deployment config
-└── README.md                         # Project documentation
+│       ├── index.html                # Main Web UI, Cookie Guide, Tool Cards & Privacy Policy
+│       ├── app.js                    # Client-side filters, pagination, locked-clip UI & SSE
+│       ├── og-image.png              # Social sharing banner (1200x630 PNG)
+│       ├── favicon.svg               # Gold MDL vector favicon
+│       └── downloads/                # Direct downloadable MDLDownloader.exe & Extension .ZIP
+├── package.json                      # Zero-dependency Node.js configuration
+├── render.yaml                       # Render.com cloud deployment blueprint
+└── README.md                         # Project documentation & security verification
 ```
 
 ---
 
 ## 🔒 Privacy & Legal Disclaimer
 
-- **No Personal Data Collected:** MDLDownloader does not store, log, or transmit user credentials, session tokens, or IP addresses to any database.
-- **Independent Tool:** MDLDownloader is an independent archiving utility created for users to back up their own gaming clips and is **not** affiliated with, endorsed by, or connected to Medal B.V. (`medal.tv`).
+- **No Personal Data Collected:** MDLDownloader does not collect, store, or transmit user credentials, session tokens, or IP addresses to any database.
+- **Independent Project:** MDLDownloader is an independent open-source archiving utility created for gamers to back up their own clips and is **not** affiliated with, endorsed by, or connected to Medal B.V. (`medal.tv`).
 
 ---
 
 ## 📄 License
 
-Distributed under the **MIT License**. Free to use, modify, and self-host.
+Distributed under the **MIT License**. Free to use, audit, modify, and self-host.
