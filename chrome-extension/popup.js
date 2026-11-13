@@ -41,6 +41,7 @@ async function initPopup() {
         const { header } = await ensureAuthHeader(sessionAuth);
         const profile = await fetchUserProfileById(sessionAuth.userId, header);
         sessionAuth.userName = profile.userName;
+        sessionAuth.submissions = profile.submissions || 0;
         sessionStatus.textContent = `Logged in as @${profile.userName}`;
     } else {
         sessionStatus.classList.remove('logged');
@@ -50,7 +51,7 @@ async function initPopup() {
     }
 }
 
-async function runScan(userId, fallbackName, isOwnAccount) {
+async function runScan(userId, fallbackName, isOwnAccount, expectedTotal = 0) {
     if (isScanning) return;
     isScanning = true;
     manualScanBtn.disabled = true;
@@ -65,8 +66,10 @@ async function runScan(userId, fallbackName, isOwnAccount) {
             fallbackName,
             isOwnAccount,
             sessionAuth,
-            onProgress: (count) => {
-                progressStatus.textContent = `Scanning clips... (${count} unlocked found)`;
+            expectedTotal,
+            onProgress: (count, _protectedCount, totalHint) => {
+                const totalStr = totalHint > 0 ? ` / ~${totalHint}` : '';
+                progressStatus.textContent = `Scanning clips... (${count}${totalStr} unlocked found)`;
             }
         });
 
@@ -99,7 +102,7 @@ actionSessionBtn.addEventListener('click', () => {
     if (sessionAuth && sessionAuth.registeredUser) {
         const label = sessionAuth.userName || sessionAuth.userId;
         manualProfileInput.value = label;
-        runScan(sessionAuth.userId, label, true);
+        runScan(sessionAuth.userId, label, true, sessionAuth.submissions || 0);
     } else {
         chrome.tabs.create({ url: 'https://medal.tv/login' });
     }
@@ -114,7 +117,7 @@ manualSearchForm.addEventListener('submit', async (e) => {
         manualScanBtn.disabled = true;
         const resolved = await resolveUsernameOrUrl(q, sessionAuth);
         const isSelf = Boolean(sessionAuth?.registeredUser && String(sessionAuth.userId) === String(resolved.userId));
-        await runScan(resolved.userId, resolved.userName, isSelf);
+        await runScan(resolved.userId, resolved.userName, isSelf, resolved.submissions || 0);
     } catch (err) {
         progressStatus.textContent = `Error: ${err.message}`;
         manualScanBtn.disabled = false;

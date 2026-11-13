@@ -42,4 +42,8 @@ if ($LASTEXITCODE -ne 0) {
 
 $info = Get-Item $outExe
 $hash = (Get-FileHash $outExe -Algorithm SHA256).Hash.ToLower()
+$webDlExe = Join-Path (Split-Path -Parent $dir) "web\public\downloads\MDLDownloader.exe"
+if (Test-Path (Split-Path -Parent $webDlExe)) {
+    Copy-Item -Path $outExe -Destination $webDlExe -Force
+}
 Write-Output ("Built $outExe => " + $info.Length + " bytes, SHA-256=" + $hash)

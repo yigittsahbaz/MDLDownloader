@@ -362,11 +362,13 @@ function updateCounts() {
         }
     }
 
-    // Show large library notice if 100+ clips selected
+    // Show large library notice if 100+ clips or >= 1.5 GB estimated size selected
     if (largeLibraryNotice && largeNoticeCount) {
-        if (state.selectedIds.size >= 100) {
+        const largeThresholdBytes = 1.5 * 1024 * 1024 * 1024;
+        if (state.selectedIds.size >= 100 || estBytes >= largeThresholdBytes) {
+            const gbText = (estBytes / (1024 * 1024 * 1024)).toFixed(1);
             largeLibraryNotice.style.display = 'block';
-            largeNoticeCount.textContent = state.selectedIds.size;
+            largeNoticeCount.textContent = `${state.selectedIds.size} clips / ~${gbText} GB`;
         } else {
             largeLibraryNotice.style.display = 'none';
         }

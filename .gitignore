@@ -2,12 +2,10 @@
 node_modules/
 npm-debug.log*
 
-# PyInstaller build artifacts (keep final .exe, ignore temp build folders)
-desktop-app/build/
-desktop-app/dist/
-desktop-app/*.spec
-__pycache__/
-*.pyc
+# Local desktop build output (canonical downloadable binary is in web/public/downloads/MDLDownloader.exe)
+desktop-app/MDLDownloader.exe
+*.pdb
+*.obj
 
 # OS & Editor files
 .DS_Store

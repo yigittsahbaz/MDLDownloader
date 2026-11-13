@@ -130,8 +130,15 @@ export async function resolveUsernameOrUrl(input, sessionAuth) {
     throw new Error(`User "${clean}" not found.`);
 }
 
-export async function scanClipsForUser({ userId, fallbackName, isOwnAccount, sessionAuth, onProgress }) {
+export async function scanClipsForUser({ userId, fallbackName, isOwnAccount, sessionAuth, expectedTotal = 0, onProgress }) {
     const { header } = await ensureAuthHeader(sessionAuth);
+    let totalHint = Number(expectedTotal) || 0;
+    if (!totalHint) {
+        const prof = await fetchUserProfileById(userId, header);
+        totalHint = Number(prof.submissions) || 0;
+        if (!fallbackName && prof.userName) fallbackName = prof.userName;
+    }
+
     const rawList = [];
     let protectedCount = 0;
     const seen = new Set();
@@ -165,7 +172,7 @@ export async function scanClipsForUser({ userId, fallbackName, isOwnAccount, ses
                 }
             }
             if (typeof onProgress === 'function') {
-                onProgress(rawList.length, protectedCount);
+                onProgress(rawList.length, protectedCount, totalHint);
             }
             if (batch.length < 50) break;
             offset += 50;

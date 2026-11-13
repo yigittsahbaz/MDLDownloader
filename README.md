@@ -93,7 +93,7 @@ No web server needed — works directly inside Chrome, Brave, Edge, or Opera:
 
 For maximum speed on large clip libraries:
 
-1. Download and run **[`desktop-app/MDLDownloader.exe`](./desktop-app/MDLDownloader.exe)** (also available on the Web App homepage with SHA-256 verification).
+1. Download and run **[`web/public/downloads/MDLDownloader.exe`](./web/public/downloads/MDLDownloader.exe)** (also available on the Web App homepage with SHA-256 verification).
 2. Enter your Medal Profile URL or Username and click **Fetch Clips**.
 3. (Optional) Paste your `medal-auth` cookie value or `mdl_...` key for private/guest-protected clips.
 4. Filter by Game or Date, verify your target folder (defaults to `Downloads`), and click **Download Selected**.
@@ -135,8 +135,7 @@ MDLDownloader/
 │   ├── build.ps1                     # Zero-dependency csc.exe build script
 │   ├── lib/                          # Official Microsoft-signed WebView2 assemblies
 │   ├── Program.cs                    # Native C# WebView2 bridge & 8-thread ZIP64 engine
-│   ├── ui.html                       # Modern HTML5/CSS3 dark & gold desktop UI
-│   └── MDLDownloader.exe             # Standalone compiled Windows executable (<1 MB)
+│   └── ui.html                       # Modern HTML5/CSS3 dark & gold desktop UI
 ├── web/                              # TikWM-style Web Application
 │   ├── server.js                     # Zero-dependency Node.js server, SSE & whitelist proxy
 │   ├── zip-stream.js                 # Zero-dependency server-side ZIP64 stream writer
