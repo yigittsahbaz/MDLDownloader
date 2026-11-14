@@ -54,9 +54,9 @@ We built **MDLDownloader** to be completely transparent, auditable, and safe for
 2. **Zero Credential or Session Storage:**
    - If you optionally use a `medal-auth` session cookie/key to unlock your own private or guest-protected clips, it is sent strictly over HTTPS to `medal.tv` for that request only. Keys are **never** logged, saved to a database, or shared with third parties.
 3. **Public VirusTotal Scan & SHA-256 Checksum (`MDLDownloader.exe`):**
-   - **Executable Path:** [`web/public/downloads/MDLDownloader.exe`](./web/public/downloads/MDLDownloader.exe) (`1,008,640` bytes / `1.0 MB`)
-   - **SHA-256 Hash:** `8c9649e70ac800ee2dd258c3dd8c14b86100d74374d2f1e4c199e85a85c3c941`
-   - **VirusTotal Report:** [**View Official VirusTotal Analysis ↗**](https://www.virustotal.com/gui/file/8c9649e70ac800ee2dd258c3dd8c14b86100d74374d2f1e4c199e85a85c3c941)
+   - **Executable Path:** [`web/public/downloads/MDLDownloader.exe`](./web/public/downloads/MDLDownloader.exe) (`1,009,152` bytes / `1.0 MB`)
+   - **SHA-256 Hash:** `a8654191811d6591cf41fa6def4622da1f5ddcd2c3f6d29cf6a84263e709b015`
+   - **VirusTotal Report:** [**View Official VirusTotal Analysis ↗**](https://www.virustotal.com/gui/file/a8654191811d6591cf41fa6def4622da1f5ddcd2c3f6d29cf6a84263e709b015)
 
 You can verify the downloaded `.EXE` hash on Windows PowerShell in one second:
 

@@ -105,6 +105,19 @@ copySnippetBtn.addEventListener('click', () => {
     setTimeout(() => { copySnippetBtn.textContent = 'Copy'; }, 2000);
 });
 
+function escapeHtml(str) {
+    return String(str ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+function isSafeHttpsUrl(url) {
+    return typeof url === 'string' && /^https:\/\//i.test(url.trim());
+}
+
 function sanitizeFilename(name) {
     const clean = (name || 'Untitled').replace(/[\\/*?:"<>|]/g, '_').trim();
     return clean.slice(0, 75) || 'Untitled';
@@ -146,7 +159,7 @@ searchForm.addEventListener('submit', async (e) => {
         }
 
         state.profile = profile;
-        if (profile.thumbnail) {
+        if (isSafeHttpsUrl(profile.thumbnail)) {
             profileAvatar.src = profile.thumbnail;
             profileAvatar.style.display = 'block';
         }
@@ -510,30 +523,35 @@ function renderGrid() {
         card.className = `clip-card ${isSelected ? 'selected' : ''}${isLocked ? ' locked' : ''}`;
 
         const proxyHref = `/api/proxy-video?url=${encodeURIComponent(clip.videoUrl || '')}&filename=${encodeURIComponent(clip.filename)}`;
+        const safeThumb = isSafeHttpsUrl(clip.thumbnail) ? escapeHtml(clip.thumbnail) : '';
+        const safeTitle = escapeHtml(clip.title);
+        const safeCategory = escapeHtml(clip.categoryName);
+        const safeContentId = escapeHtml(clip.contentId);
+        const safeFilename = escapeHtml(clip.filename);
 
         card.innerHTML = `
             <div>
                 <div class="thumb-wrap">
-                    ${clip.thumbnail ? `<img src="${clip.thumbnail}" loading="lazy" alt="" />` : ''}
+                    ${safeThumb ? `<img src="${safeThumb}" loading="lazy" alt="" />` : ''}
                     ${isLocked ? `<div class="lock-overlay"><span class="lock-pill">🔒 Session Key Required</span></div>` : ''}
                     <label class="thumb-top-left" style="cursor: ${isLocked ? 'not-allowed' : 'pointer'};">
-                        <input type="checkbox" class="clip-check" data-id="${clip.contentId}" ${isSelected ? 'checked' : ''} ${isLocked ? 'disabled' : ''} />
+                        <input type="checkbox" class="clip-check" data-id="${safeContentId}" ${isSelected ? 'checked' : ''} ${isLocked ? 'disabled' : ''} />
                         <span>#${String(clip.index).padStart(state.allClips.length >= 1000 ? 4 : 3, '0')}</span>
                     </label>
-                    <span class="thumb-duration">${formatDuration(clip.duration)}</span>
+                    <span class="thumb-duration">${escapeHtml(formatDuration(clip.duration))}</span>
                 </div>
                 <div class="clip-body">
-                    <div class="clip-title" title="${clip.title.replace(/"/g, '&quot;')}">${clip.title}</div>
+                    <div class="clip-title" title="${safeTitle}">${safeTitle}</div>
                     <div class="clip-meta">
-                        <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:130px;">${clip.categoryName}</span>
-                        <span>${formatDate(clip.created)}</span>
+                        <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:130px;">${safeCategory}</span>
+                        <span>${escapeHtml(formatDate(clip.created))}</span>
                     </div>
                 </div>
             </div>
             <div class="clip-footer">
-                <span style="color:#6b7280;font-family:Consolas,monospace;">${clip.contentId}</span>
+                <span style="color:#6b7280;font-family:Consolas,monospace;">${safeContentId}</span>
                 ${!isLocked
-                    ? `<a href="${proxyHref}" download="${clip.filename}" class="dl-link">Download MP4</a>`
+                    ? `<a href="${escapeHtml(proxyHref)}" download="${safeFilename}" class="dl-link">Download MP4</a>`
                     : `<span style="color:#f87171;font-weight:600;">🔒 Cookie Required</span>`
                 }
             </div>

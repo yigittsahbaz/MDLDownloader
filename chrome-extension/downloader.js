@@ -1,5 +1,6 @@
 import { downloadZip } from './client-zip.js';
 import {
+    escapeHtml,
     sanitize,
     formatBytes,
     getCookieSession,
@@ -76,7 +77,7 @@ async function initFullPage() {
             targetUserLabel.textContent = `@${activeTargetUser.userName} (${allClips.length} Clips)`;
             renderGamesGrid();
             gamesPanel.style.display = 'block';
-            statusNote.innerHTML = `Loaded <strong>${allClips.length} clips</strong> for <strong>@${activeTargetUser.userName}</strong>. Choose <strong>Download Single MyClips.zip</strong> below when ready.`;
+            statusNote.innerHTML = `Loaded <strong>${allClips.length} clips</strong> for <strong>@${escapeHtml(activeTargetUser.userName)}</strong>. Choose <strong>Download Single MyClips.zip</strong> below when ready.`;
         }
     } catch {}
 }
@@ -110,11 +111,11 @@ async function runScan(userId, fallbackName, isOwnAccount, expectedTotal = 0) {
         gamesPanel.style.display = 'block';
 
         if (allClips.length === 0 && res.protectedCount > 0) {
-            statusNote.innerHTML = `Found <strong>${res.protectedCount} clips</strong> on @${activeTargetUser.userName}, but they require logging in on Medal.tv.`;
+            statusNote.innerHTML = `Found <strong>${Number(res.protectedCount)} clips</strong> on @${escapeHtml(activeTargetUser.userName)}, but they require logging in on Medal.tv.`;
         } else if (res.protectedCount > 0) {
-            statusNote.innerHTML = `Loaded <strong>${allClips.length} unlocked clips</strong> for @${activeTargetUser.userName} (${res.protectedCount} guest-protected skipped).`;
+            statusNote.innerHTML = `Loaded <strong>${allClips.length} unlocked clips</strong> for @${escapeHtml(activeTargetUser.userName)} (${Number(res.protectedCount)} guest-protected skipped).`;
         } else {
-            statusNote.innerHTML = `Ready! Found <strong>${allClips.length} clips</strong> across ${Object.keys(gameCounts).length} games for @${activeTargetUser.userName}.`;
+            statusNote.innerHTML = `Ready! Found <strong>${allClips.length} clips</strong> across ${Object.keys(gameCounts).length} games for @${escapeHtml(activeTargetUser.userName)}.`;
         }
     } catch (err) {
         statusNote.textContent = `Error: ${err.message}`;
@@ -177,12 +178,13 @@ function renderGamesGrid() {
     for (const [gameName, count] of sorted) {
         const label = document.createElement('label');
         label.className = 'game-item';
+        const safeGame = escapeHtml(gameName);
         label.innerHTML = `
             <div class="game-left">
                 <input type="checkbox" class="game-check" ${selectedGames.has(gameName) ? 'checked' : ''} />
-                <span class="game-name" title="${gameName.replace(/"/g, '&quot;')}">${gameName}</span>
+                <span class="game-name" title="${safeGame}">${safeGame}</span>
             </div>
-            <span class="game-count">${count}</span>
+            <span class="game-count">${Number(count)}</span>
         `;
         label.querySelector('.game-check').addEventListener('change', (e) => {
             if (e.target.checked) selectedGames.add(gameName);

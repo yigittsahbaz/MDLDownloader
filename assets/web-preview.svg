@@ -138,12 +138,12 @@
     <rect x="0" y="0" width="362" height="154" rx="4" fill="#181a20" stroke="#2b2f38"/>
     <text x="16" y="22" fill="#f5b800" font-size="10" font-weight="700">WINDOWS DESKTOP APP (.EXE) • OPEN SOURCE (MIT)</text>
     <text x="16" y="41" fill="#ffffff" font-size="14" font-weight="700">MDLDownloader for Windows</text>
-    <text x="16" y="59" fill="#9ca3af" font-size="10.5">Native C# Edge WebView2 app (&lt;1 MB) • 8-thread parallel ZIP64 engine.</text>
+    <text x="16" y="59" fill="#9ca3af" font-size="10.5">Native C# Edge WebView2 app (1.0 MB) • 8-thread parallel ZIP64 engine.</text>
     <rect x="16" y="69" width="330" height="40" rx="3" fill="#121316" stroke="#262930"/>
     <text x="24" y="84" fill="#4ade80" font-size="10" font-weight="700">✓ 100% Open Source</text>
     <text x="200" y="84" fill="#60a5fa" font-size="10" font-weight="700">VirusTotal ↗</text>
     <text x="275" y="84" fill="#f5b800" font-size="10" font-weight="700">C# Source ↗</text>
-    <text x="24" y="101" fill="#9ca3af" font-size="9" font-family="Consolas, monospace">SHA-256: 8c9649e70ac800ee2dd258c3dd8c14b8...c941</text>
+    <text x="24" y="101" fill="#9ca3af" font-size="9" font-family="Consolas, monospace">SHA-256: a8654191811d6591cf41fa6def4622da...b015</text>
     <text x="16" y="136" fill="#8a8f98" font-size="10.5">Portable Windows App (1.0 MB)</text>
     <rect x="242" y="118" width="104" height="26" rx="3" fill="#f5b800"/>
     <text x="294" y="135" fill="#0c0d0f" font-size="11" font-weight="800" text-anchor="middle">Download .EXE</text>

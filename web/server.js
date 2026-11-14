@@ -221,14 +221,38 @@ function openMedalStream(targetUrl, redirectsLeft = 5, onRequestCreated = null) 
     });
 }
 
-// Active ZIP streaming job progress registry for real-time UI progress bar (SSE)
+// Active ZIP streaming job progress registry & DoS guardrails
 const downloadJobs = new Map();
+const MAX_TRACKED_JOBS = 120;
+const MAX_ACTIVE_ZIP_STREAMS = 6;
+const MAX_CLIPS_PER_ZIP = 2500;
+let activeZipStreams = 0;
 
-function getOrCreateJob(jobId) {
+function pruneStaleJobs() {
+    const now = Date.now();
+    for (const [id, job] of downloadJobs.entries()) {
+        if (!job.started && job.clients.size === 0 && now - job.createdAt > 60000) {
+            downloadJobs.delete(id);
+        } else if (now - job.createdAt > 6 * 3600000) {
+            downloadJobs.delete(id);
+        }
+    }
+}
+
+function getOrCreateJob(jobId, createIfMissing = true) {
     if (!jobId) return null;
     let job = downloadJobs.get(jobId);
-    if (!job) {
-        job = { clients: new Set(), aborted: false, cancelFn: null, lastEvent: null };
+    if (!job && createIfMissing) {
+        pruneStaleJobs();
+        if (downloadJobs.size >= MAX_TRACKED_JOBS) return null;
+        job = {
+            clients: new Set(),
+            aborted: false,
+            started: false,
+            createdAt: Date.now(),
+            cancelFn: null,
+            lastEvent: null
+        };
         downloadJobs.set(jobId, job);
     }
     return job;
@@ -350,7 +374,8 @@ const server = http.createServer(async (req, res) => {
     // 3. API: Stream video with CORS headers and automatic 301/302/307/308 redirect following
     if (pathname === '/api/proxy-video') {
         const videoUrl = parsedUrl.searchParams.get('url') || '';
-        const filename = parsedUrl.searchParams.get('filename') || 'clip.mp4';
+        const rawFilename = parsedUrl.searchParams.get('filename') || 'clip.mp4';
+        const filename = sanitizeZipPart(path.basename(rawFilename), 'clip.mp4');
         if (!videoUrl || !videoUrl.startsWith('https://')) {
             res.writeHead(400, { 'Content-Type': 'text/plain' });
             return res.end('Invalid video URL');
@@ -426,17 +451,22 @@ const server = http.createServer(async (req, res) => {
 
     // 3.4. API: Real-time SSE progress stream & cancel for server-side ZIP downloads
     if (pathname === '/api/download-progress' && req.method === 'GET') {
-        const jobId = parsedUrl.searchParams.get('id') || '';
+        const jobId = (parsedUrl.searchParams.get('id') || '').slice(0, 64);
         if (!jobId) {
             res.writeHead(400);
             return res.end('Missing job id');
         }
-        const job = getOrCreateJob(jobId);
+        const job = getOrCreateJob(jobId, true);
+        if (!job) {
+            res.writeHead(429, { 'Content-Type': 'text/plain' });
+            return res.end('Too many active download sessions. Please wait a moment.');
+        }
         res.writeHead(200, {
             'Content-Type': 'text/event-stream; charset=utf-8',
             'Cache-Control': 'no-cache, no-store, must-revalidate',
             'Connection': 'keep-alive',
-            'X-Accel-Buffering': 'no'
+            'X-Accel-Buffering': 'no',
+            'X-Content-Type-Options': 'nosniff'
         });
         job.clients.add(res);
         if (job.lastEvent) {
@@ -444,12 +474,15 @@ const server = http.createServer(async (req, res) => {
         }
         req.on('close', () => {
             job.clients.delete(res);
+            if (!job.started && job.clients.size === 0) {
+                downloadJobs.delete(jobId);
+            }
         });
         return;
     }
 
     if (pathname === '/api/download-cancel' && req.method === 'POST') {
-        const jobId = parsedUrl.searchParams.get('id') || '';
+        const jobId = (parsedUrl.searchParams.get('id') || '').slice(0, 64);
         const job = downloadJobs.get(jobId);
         if (job) {
             job.aborted = true;
@@ -462,6 +495,11 @@ const server = http.createServer(async (req, res) => {
 
     // 3.5. API: Server-side Streaming Single ZIP Download (No client RAM crash, no parts splitting, native browser Downloads bar)
     if (pathname === '/api/download-zip' && req.method === 'POST') {
+        if (activeZipStreams >= MAX_ACTIVE_ZIP_STREAMS) {
+            res.writeHead(503, { 'Content-Type': 'text/plain' });
+            return res.end('Server is busy streaming other archives. Please retry shortly or use the Desktop App.');
+        }
+
         let payload;
         try {
             const rawBody = await readRequestBody(req);
@@ -491,9 +529,15 @@ const server = http.createServer(async (req, res) => {
             res.writeHead(400, { 'Content-Type': 'text/plain' });
             return res.end('No valid Medal.tv clips supplied.');
         }
+        if (validClips.length > MAX_CLIPS_PER_ZIP) {
+            res.writeHead(400, { 'Content-Type': 'text/plain' });
+            return res.end(`Too many clips (${validClips.length}). Max ${MAX_CLIPS_PER_ZIP} clips per web ZIP; use the Desktop App for larger libraries.`);
+        }
 
         const jobId = typeof payload.jobId === 'string' ? payload.jobId.slice(0, 64) : '';
-        const job = getOrCreateJob(jobId);
+        const job = getOrCreateJob(jobId, true);
+        if (job) job.started = true;
+        activeZipStreams++;
         const safeZipBase = sanitizeZipPart(payload.zipName || 'MyClips_Archive', 'MyClips_Archive').replace(/\.zip$/i, '');
         const zipFilename = `${safeZipBase}.zip`;
         const groupByGame = payload.groupByGame !== false;
@@ -644,6 +688,7 @@ const server = http.createServer(async (req, res) => {
             }
             emitJobEvent(job, { type: 'error', message: err.message });
         } finally {
+            activeZipStreams = Math.max(0, activeZipStreams - 1);
             if (job) {
                 setTimeout(() => {
                     for (const c of job.clients) { try { c.end(); } catch {} }
@@ -655,8 +700,9 @@ const server = http.createServer(async (req, res) => {
     }
 
     // 4. Static files
-    let filePath = path.join(PUBLIC_DIR, pathname === '/' ? 'index.html' : pathname);
-    if (!filePath.startsWith(PUBLIC_DIR)) {
+    const relPath = pathname === '/' ? 'index.html' : pathname.replace(/^\/+/, '');
+    const filePath = path.resolve(PUBLIC_DIR, relPath);
+    if (!filePath.startsWith(PUBLIC_DIR + path.sep)) {
         res.writeHead(403);
         return res.end('Forbidden');
     }
@@ -680,7 +726,10 @@ const server = http.createServer(async (req, res) => {
         };
         const headers = {
             'Content-Type': mimeTypes[ext] || 'application/octet-stream',
-            'Content-Length': stats.size
+            'Content-Length': stats.size,
+            'X-Content-Type-Options': 'nosniff',
+            'X-Frame-Options': 'DENY',
+            'Referrer-Policy': 'strict-origin-when-cross-origin'
         };
         if (ext === '.html' || ext === '.js' || ext === '.css') {
             headers['Cache-Control'] = 'no-cache, no-store, must-revalidate';

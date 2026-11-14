@@ -821,6 +821,17 @@ function appendLog(line) {
     logBox.scrollTop = logBox.scrollHeight;
 }
 
+function escapeHtml(str) {
+    return String(str ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+function isSafeHttpsUrl(url) {
+    return typeof url === 'string' && /^https:\/\//i.test(url.trim());
+}
 function formatDuration(sec) {
     const s = Math.round(Number(sec) || 0);
     return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
@@ -836,7 +847,7 @@ function formatBytes(bytes) {
     return `${Math.round(bytes / (1024 * 1024))} MB`;
 }
 
-// Called asynchronously from Python worker threads
+// Called asynchronously from C# worker threads
 window.onDesktopEvent = function(ev) {
     if (!ev) return;
     if (ev.type === 'fetch_progress') {
@@ -854,7 +865,7 @@ window.onDesktopEvent = function(ev) {
         state.allClips = ev.clips || [];
         state.currentPage = 1;
         state.lastAnchorId = null;
-        if (ev.profile.thumbnail) {
+        if (isSafeHttpsUrl(ev.profile.thumbnail)) {
             profileAvatar.src = ev.profile.thumbnail;
             profileAvatar.style.display = 'block';
         }
@@ -1154,27 +1165,31 @@ function renderGrid() {
         const isSel = !isLocked && state.selectedIds.has(clip.contentId);
         const card = document.createElement('div');
         card.className = `clip-card${isSel ? ' selected' : ''}${isLocked ? ' locked' : ''}`;
+        const safeThumb = isSafeHttpsUrl(clip.thumbnail) ? escapeHtml(clip.thumbnail) : '';
+        const safeTitle = escapeHtml(clip.title);
+        const safeGame = escapeHtml(clip.game);
+        const safeContentId = escapeHtml(clip.contentId);
         card.innerHTML = `
             <div>
                 <div class="thumb-wrap">
-                    ${clip.thumbnail ? `<img src="${clip.thumbnail}" loading="lazy" alt="" />` : ''}
+                    ${safeThumb ? `<img src="${safeThumb}" loading="lazy" alt="" />` : ''}
                     ${isLocked ? `<div class="lock-overlay"><span class="lock-pill">🔒 Session Key Required</span></div>` : ''}
                     <label class="thumb-top-left">
-                        <input type="checkbox" class="clip-check" data-id="${clip.contentId}" ${isSel ? 'checked' : ''} ${isLocked ? 'disabled' : ''} />
+                        <input type="checkbox" class="clip-check" data-id="${safeContentId}" ${isSel ? 'checked' : ''} ${isLocked ? 'disabled' : ''} />
                         <span>#${String(clip.index).padStart(state.allClips.length >= 1000 ? 4 : 3, '0')}</span>
                     </label>
-                    <span class="thumb-duration">${formatDuration(clip.duration)}</span>
+                    <span class="thumb-duration">${escapeHtml(formatDuration(clip.duration))}</span>
                 </div>
                 <div class="clip-body">
-                    <div class="clip-title" title="${clip.title.replace(/"/g, '&quot;')}">${clip.title}</div>
+                    <div class="clip-title" title="${safeTitle}">${safeTitle}</div>
                     <div class="clip-meta">
-                        <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:130px;">${clip.game}</span>
-                        <span>${formatDate(clip.created)}</span>
+                        <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:130px;">${safeGame}</span>
+                        <span>${escapeHtml(formatDate(clip.created))}</span>
                     </div>
                 </div>
             </div>
             <div class="clip-footer">
-                <span style="color:#6b7280;font-family:Consolas,monospace;">${clip.contentId}</span>
+                <span style="color:#6b7280;font-family:Consolas,monospace;">${safeContentId}</span>
                 ${!isLocked
                     ? `<span style="color:#4ade80;font-weight:600;">✓ Ready</span>`
                     : `<span style="color:#f87171;font-weight:600;">🔒 Cookie Required</span>`

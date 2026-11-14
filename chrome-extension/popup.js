@@ -1,4 +1,5 @@
 import {
+    escapeHtml,
     getCookieSession,
     ensureAuthHeader,
     fetchUserProfileById,
@@ -83,9 +84,9 @@ async function runScan(userId, fallbackName, isOwnAccount, expectedTotal = 0) {
         gamesSection.classList.add('visible');
 
         if (allClips.length === 0 && res.protectedCount > 0) {
-            progressStatus.innerHTML = `Found <strong>${res.protectedCount} clips</strong> on @${activeTargetUser.userName}, but they require logging in on Medal.tv.`;
+            progressStatus.innerHTML = `Found <strong>${Number(res.protectedCount)} clips</strong> on @${escapeHtml(activeTargetUser.userName)}, but they require logging in on Medal.tv.`;
         } else if (res.protectedCount > 0) {
-            progressStatus.innerHTML = `Loaded <strong>${allClips.length} clips</strong> (${res.protectedCount} guest-protected skipped). Select games &amp; click below.`;
+            progressStatus.innerHTML = `Loaded <strong>${allClips.length} clips</strong> (${Number(res.protectedCount)} guest-protected skipped). Select games &amp; click below.`;
         } else {
             progressStatus.textContent = `Ready! Found ${allClips.length} clips across ${Object.keys(gameCounts).length} games for @${activeTargetUser.userName}.`;
         }
@@ -135,12 +136,13 @@ function renderGamesList() {
     for (const [gameName, count] of sorted) {
         const label = document.createElement('label');
         label.className = 'game-row';
+        const safeGame = escapeHtml(gameName);
         label.innerHTML = `
             <div class="game-left">
                 <input type="checkbox" class="game-check" ${selectedGames.has(gameName) ? 'checked' : ''} />
-                <span class="game-name" title="${gameName.replace(/"/g, '&quot;')}">${gameName}</span>
+                <span class="game-name" title="${safeGame}">${safeGame}</span>
             </div>
-            <span class="game-count">${count} video${count > 1 ? 's' : ''}</span>
+            <span class="game-count">${Number(count)} video${count > 1 ? 's' : ''}</span>
         `;
         label.querySelector('.game-check').addEventListener('change', (e) => {
             if (e.target.checked) selectedGames.add(gameName);

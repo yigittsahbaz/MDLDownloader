@@ -1,5 +1,14 @@
 // Shared Medal.tv API & formatting helpers for MDLDownloader Chrome Extension
 
+export function escapeHtml(str) {
+    return String(str ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
 export function sanitize(name) {
     return (name || 'Untitled').replace(/[\\/*?:"<>|]/g, '_').trim().slice(0, 75) || 'Untitled';
 }
