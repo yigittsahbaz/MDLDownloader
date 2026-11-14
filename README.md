@@ -4,7 +4,7 @@
 
 ### Bulk Medal.tv Video & Profile Downloader — No Watermark • Original 1080p MP4 • Single `MyClips.zip`
 
-[![Node.js](https://img.shields.io/badge/Node.js-Zero_Dependencies-2ea043?style=for-the-badge&logo=nodedotjs&logoColor=white)](#1-web-application-zero-dependency-nodejs)
+[![Live Web App](https://img.shields.io/badge/Live_Web_App-Use_Online-2ea043?style=for-the-badge&logo=googlechrome&logoColor=white)](https://mdldownloader.onrender.com/)
 [![Chrome Extension](https://img.shields.io/badge/Chrome_Extension-Manifest_V3-f5b800?style=for-the-badge&logo=googlechrome&logoColor=black)](#2-chrome-extension-1-click-session--full-tab-downloader)
 [![Windows EXE](https://img.shields.io/badge/Windows_Desktop-Native_C%23_WebView2-0078D6?style=for-the-badge&logo=windows&logoColor=white)](#3-windows-desktop-app-native-c-webview2-exe)
 [![VirusTotal](https://img.shields.io/badge/VirusTotal-SHA256_Verified-4ade80?style=for-the-badge&logo=virustotal&logoColor=black)](#-security-transparency--sha-256--virustotal-verification)
@@ -12,7 +12,7 @@
 
 **MDLDownloader** is a 100% open-source 3-in-1 toolkit to back up and bulk-download your gaming clips from **Medal.tv** in original full-HD quality without watermarks, automatically organized into game subfolders inside a single `MyClips_<username>.zip` archive.
 
-[🌐 Web App](#1-web-application-zero-dependency-nodejs) • [🧩 Browser Extension](#2-chrome-extension-1-click-session--full-tab-downloader) • [💻 Windows Desktop `.EXE`](#3-windows-desktop-app-native-c-webview2-exe) • [🛡️ Security & VirusTotal](#-security-transparency--sha-256--virustotal-verification)
+[🌐 Open Web App ↗](https://mdldownloader.onrender.com/) • [🧩 Browser Extension](#2-chrome-extension-1-click-session--full-tab-downloader) • [💻 Windows Desktop `.EXE`](#3-windows-desktop-app-native-c-webview2-exe) • [🛡️ Security & VirusTotal](#-security-transparency--sha-256--virustotal-verification)
 
 </div>
 
@@ -74,23 +74,15 @@ Get-FileHash .\MDLDownloader.exe -Algorithm SHA256
 
 ## 🚀 Quick Start Guide
 
-### 1. Web Application (Zero-Dependency Node.js)
+### 1. Web Application (Instant Online Tool)
 
-Requires **only Node.js (18+)** — no external `npm install` packages needed:
+No installation required — use the live web app directly in any desktop or mobile browser:
 
-```bash
-# Clone the repository
-git clone https://github.com/yigittsahbaz/MDLDownloader.git
-cd MDLDownloader
-
-# Start the web server
-npm start
-```
-
-Open **`http://localhost:3000`** in your browser.
+👉 **[Open MDLDownloader Web App ↗](https://mdldownloader.onrender.com/)**
 
 - **Public Clips:** Enter any Medal username or `https://medal.tv/u/<username>` and click **Fetch Clips**.
 - **Protected / Private Clips:** Click any locked clip card (`🔒 Session Key Required`) or expand **Unlock Private or Guest-Protected Clips** to copy your `medal-auth` cookie from `F12 -> Application -> Cookies -> medal.tv` (or use the Browser Extension for automatic 1-click detection).
+- **Save Options:** Click **Download MyClips.zip** for a single ZIP64 archive, **Save to Local Folder** for direct folder saving with resume support, or **Download MP4** on individual clips.
 
 ---
 
